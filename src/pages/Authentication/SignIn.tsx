@@ -2,8 +2,42 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, getCurrentUser } from "../../../store/Slices/authSlice.ts";
+import { RootState, AppDispatch } from '../../../store/store.ts';
+
+interface SignInFormInputs {
+  username: string;
+  password: string;
+}
 
 const SignIn: React.FC = () => {
+
+  const { handleSubmit, register, formState: { errors }} = useForm<SignInFormInputs>();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const loading = useSelector((state: RootState) => state.auth.loading);
+
+  const submit: SubmitHandler<SignInFormInputs> = async (data) => {
+    const isEmail = data.username.includes("@");
+    const loginData = isEmail ? { email: data.username, password: data.password } : data;
+
+    const response = await dispatch(loginUser(loginData));
+    if (response.payload) {
+      const user = await dispatch(getCurrentUser());
+      if (user.payload) {
+        navigate("/dashboard");
+      }
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+
   return (
     <>
 
@@ -17,8 +51,7 @@ const SignIn: React.FC = () => {
               </Link>
 
               <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
+              Transform your fitness business with our all-in-one gym application. Effortlessly manage enquiries, memberships, sales, marketing, and more!
               </p>
 
               <span className="mt-15 inline-block">
@@ -153,17 +186,22 @@ const SignIn: React.FC = () => {
                 Sign In
               </h2>
 
-              <form>
+              <form onSubmit={handleSubmit(submit)}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Email
+                    Username or Email
                   </label>
                   <div className="relative">
                     <input
-                      type="email"
-                      placeholder="Enter your email"
+                      type="text"
+                      {...register('username', { required: 'Username or email is required' })}
+                      placeholder="Enter your username or email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
+                    
+                    {errors.username && (
+                    <span className="absolute right-4 top-4 text-red-500">{errors.username.message}</span>
+                    )}
 
                     <span className="absolute right-4 top-4">
                       <svg
@@ -187,14 +225,19 @@ const SignIn: React.FC = () => {
 
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Re-type Password
+                    Password
                   </label>
                   <div className="relative">
                     <input
                       type="password"
-                      placeholder="6+ Characters, 1 Capital letter"
+                      {...register('password', { required: 'Password is required' })}
+                      placeholder="Enter your password"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
+
+                    {errors.password && (
+                    <span className="absolute right-4 top-4 text-red-500">{errors.password.message}</span>
+                    )}
 
                     <span className="absolute right-4 top-4">
                       <svg
