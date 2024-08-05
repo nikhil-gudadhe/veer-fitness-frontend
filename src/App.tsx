@@ -9,7 +9,6 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import ECommerce from './pages/Dashboard/ECommerce';
-import Enquiry from './pages/Enquiry/Enquiry.tsx';
 import Calendar from './pages/Calendar';
 import Profile from './pages/Profile.tsx';
 import FormElements from './pages/Form/FormElements';
@@ -21,8 +20,8 @@ import Alerts from './pages/UiElements/Alerts.tsx';
 import Buttons from './pages/UiElements/Buttons.tsx';
 import DefaultLayout from './layout/DefaultLayout';
 import AuthLayout from './components/AuthLayout';
-import AllEnquries from './pages/Enquiry/AllEnquries.tsx';
-import EnquiryPage from './pages/Enquiry/EnquiryPage.tsx';
+//import AllEnquries from './pages/Enquiry/AllEnquries.tsx';
+import Enquiry from './pages/Enquiry/Enquiry.tsx';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,30 +70,16 @@ function App() {
       />
 
       <Route
-        path="all-enquiries"
-        element={
-          <DefaultLayout>
-            <AuthLayout authentication={true}>
-              <PageTitle title="All Enquiry Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <AllEnquries />
-            </AuthLayout>
-          </DefaultLayout>
-        }
-      />
-
-      <Route
         path="enquiry"
         element={
           <DefaultLayout>
             <AuthLayout authentication={true}>
               <PageTitle title="Enquiry Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              {/* <Enquiry /> */}
-              <EnquiryPage/>
+              <Enquiry />
             </AuthLayout>
           </DefaultLayout>
         }
       />
-
 
       <Route path="calendar" element={
         <DefaultLayout>
