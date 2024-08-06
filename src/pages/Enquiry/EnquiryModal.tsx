@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../store/store';
+import { createEnquiry } from '../../../store/Slices/enquirySlice';
 
 interface EnquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (enquiry: { reference: string; gymExperience: boolean }) => void;
+  onSubmit: (data: EnquiryFormInputs) => void;
 }
 
-const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [reference, setReference] = useState('');
-  const [gymExperience, setGymExperience] = useState(false);
-  const [previousGymExperience, setpreviousGymExperience] = useState('');
+interface EnquiryFormInputs {
+  fullName: string;
+  mobile: string;
+  previousGymExperience: boolean;
+  reference?: string;
+  fitnessGoal: string;
+  target: string;
+  preferredTimeSlot: string;
+  note?: string;
+}
 
+const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose }) => {
+  const { register, handleSubmit, formState: { errors } } = useForm<EnquiryFormInputs>();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ reference, gymExperience });
+  const onSubmit: SubmitHandler<EnquiryFormInputs> = data => {
+    dispatch(createEnquiry(data));
     onClose();
   };
 
@@ -33,103 +45,99 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, onSubmit }
             ></path>
           </svg>
         </button>
-        <form action="#" onSubmit={handleSubmit}>
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your full name"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Full Name</label>
+            <input
+              {...register('fullName', { required: true })}
+              type="text"
+              placeholder="Enter your full name"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+            {errors.fullName && <span className="text-red-500">Full Name is required</span>}
+          </div>
 
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Mobile
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your mobile number"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Mobile</label>
+            <input
+              {...register('mobile', { required: true })}
+              type="text"
+              placeholder="Enter your mobile number"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+            {errors.mobile && <span className="text-red-500">Mobile is required</span>}
+          </div>
 
-                <div className="mb-4.5">
-                <label className="mb-2.5 block text-black dark:text-white">
-                    Previous Gym Experience
-                  </label>
-                  <select
-                    value={previousGymExperience}
-                    onChange={(e) => setpreviousGymExperience(e.target.value)}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  >
-                    <option value="">Select an option</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Previous Gym Experience</label>
+            <select
+              {...register('previousGymExperience', { required: true })}
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            >
+              <option value="">Select an option</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {errors.previousGymExperience && <span className="text-red-500">Previous Gym Experience is required</span>}
+          </div>
 
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Reference
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Any reference (through existing member, online ads)"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Reference</label>
+            <input
+              {...register('reference')}
+              type="text"
+              placeholder="Any reference (through existing member, online ads)"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+          </div>
 
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Fitness Goal
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="What's your fitness goal?"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Fitness Goal</label>
+            <input
+              {...register('fitnessGoal', { required: true })}
+              type="text"
+              placeholder="What's your fitness goal?"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+            {errors.fitnessGoal && <span className="text-red-500">Fitness Goal is required</span>}
+          </div>
 
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Target
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Any specific target to achieve? (e.g lose 10 kg weight)"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Target</label>
+            <input
+              {...register('target', { required: true })}
+              type="text"
+              placeholder="Any specific target to achieve? (e.g lose 10 kg weight)"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+            {errors.target && <span className="text-red-500">Target is required</span>}
+          </div>
 
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Preferred Timing Slot
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your preferred timing slot (morning/evening)"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>                
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">Preferred Timing Slot</label>
+            <input
+              {...register('preferredTimeSlot', { required: true })}
+              type="text"
+              placeholder="Enter your preferred timing slot (morning/evening)"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+            {errors.preferredTimeSlot && <span className="text-red-500">Preferred Timing Slot is required</span>}
+          </div>
 
-                <div className="mb-6">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Note
-                  </label>
-                  <textarea
-                    rows={6}
-                    placeholder="Type any custom note"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  ></textarea>
-                </div>
+          <div className="mb-6">
+            <label className="mb-2.5 block text-black dark:text-white">Note</label>
+            <textarea
+              {...register('note')}
+              rows={6}
+              placeholder="Type any custom note"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            ></textarea>
+          </div>
 
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                  Submit
-                </button>
-            </form>
+          <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+            Submit
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1,11 +1,15 @@
 // EnquiryPage.tsx
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../store/store';
 import EnquiryModal from './EnquiryModal';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import TableThree from '../../components/Tables/TableThree';
+import EnquiryList from './EnquiryList';
+import { createEnquiry } from '../../../store/Slices/enquirySlice';
 
 const Enquiry: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -15,9 +19,21 @@ const Enquiry: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddEnquiry = (enquiry: { reference: string; gymExperience: boolean }) => {
-    // Handle the new enquiry here (e.g., send it to the backend)
-    console.log('New Enquiry:', enquiry);
+  interface EnquiryFormInputs {
+    fullName: string;
+    mobile: string;
+    previousGymExperience: boolean;
+    reference?: string;
+    fitnessGoal: string;
+    target: string;
+    preferredTimeSlot: string;
+    note?: string;
+  }
+  
+
+  const handleAddEnquiry = (enquiry: EnquiryFormInputs) => {
+    dispatch(createEnquiry(enquiry));
+    handleCloseModal();
   };
 
   return (
@@ -26,7 +42,6 @@ const Enquiry: React.FC = () => {
 
       <div className="flex flex-col gap-y-4 rounded-sm border border-stroke bg-white p-3 shadow-default dark:border-strokedark dark:bg-boxdark sm:flex-row sm:items-center sm:justify-between">
       <div>
-          {/* <h3 className="pl-2 text-title-lg font-semibold text-black dark:text-white">Enquiry</h3> */}
           <button onClick={handleOpenModal} className="flex items-center gap-2 rounded bg-primary py-2 px-4.5 font-medium text-white hover:bg-opacity-90">
               <svg className="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill=""></path>
@@ -62,14 +77,10 @@ const Enquiry: React.FC = () => {
           </div>
       </div>
     </div>
-
-      {/* <button onClick={handleOpenModal} className="mb-4 rounded bg-primary px-4 py-2 text-white">
-        Add New
-      </button> */}
       <EnquiryModal isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddEnquiry} />
       {/* Enquiry List can go here */}
       <div className="flex flex-col gap-10 mt-5">
-        <TableThree/>
+        <EnquiryList/>
       </div>
     </>
   );
