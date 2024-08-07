@@ -2,13 +2,15 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
+import { EnquiryFormInputs } from '../../types/EnquiryFormInputs';
 import EnquiryModal from './EnquiryModal';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import EnquiryList from './EnquiryList';
-import { createEnquiry } from '../../../store/Slices/enquirySlice';
+import { createEnquiry, updateEnquiry } from '../../../store/Slices/enquirySlice';
 
 const Enquiry: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentEnquiry, setCurrentEnquiry] = useState<EnquiryFormInputs | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleOpenModal = () => {
@@ -19,21 +21,18 @@ const Enquiry: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  interface EnquiryFormInputs {
-    fullName: string;
-    mobile: string;
-    previousGymExperience: boolean;
-    reference?: string;
-    fitnessGoal: string;
-    target: string;
-    preferredTimeSlot: string;
-    note?: string;
-  }
-  
-
   const handleAddEnquiry = (enquiry: EnquiryFormInputs) => {
-    dispatch(createEnquiry(enquiry));
+    if (enquiry._id) {
+      dispatch(updateEnquiry(enquiry));
+    } else {
+      dispatch(createEnquiry(enquiry));
+    }
     handleCloseModal();
+  };
+
+  const handleEditEnquiry = (enquiry: EnquiryFormInputs) => {
+    setCurrentEnquiry(enquiry);
+    handleOpenModal();
   };
 
   return (
@@ -77,10 +76,10 @@ const Enquiry: React.FC = () => {
           </div>
       </div>
     </div>
-      <EnquiryModal isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddEnquiry} />
+      <EnquiryModal isOpen={isModalOpen} onClose={handleCloseModal} enquiry={currentEnquiry} onSubmit={handleAddEnquiry} />
       {/* Enquiry List can go here */}
       <div className="flex flex-col gap-10 mt-5">
-        <EnquiryList/>
+        <EnquiryList onEdit={handleEditEnquiry}/>
       </div>
     </>
   );

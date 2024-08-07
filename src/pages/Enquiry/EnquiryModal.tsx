@@ -1,32 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
-import { createEnquiry } from '../../../store/Slices/enquirySlice';
+import { EnquiryFormInputs } from '../../types/EnquiryFormInputs';
+import { createEnquiry, updateEnquiry } from '../../../store/Slices/enquirySlice';
 
 interface EnquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: EnquiryFormInputs) => void;
+  enquiry?: EnquiryFormInputs | null;
 }
 
-interface EnquiryFormInputs {
-  fullName: string;
-  mobile: string;
-  previousGymExperience: boolean;
-  reference?: string;
-  fitnessGoal: string;
-  target: string;
-  preferredTimeSlot: string;
-  note?: string;
-}
+const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry }) => {
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<EnquiryFormInputs>({
+    defaultValues: enquiry || {
+      fullName: '',
+      mobile: '',
+      previousGymExperience: false,
+      reference: '',
+      fitnessGoal: '',
+      target: '',
+      preferredTimeSlot: '',
+      note: ''
+    }
+  });
 
-const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<EnquiryFormInputs>();
   const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    reset(enquiry || {
+      fullName: '',
+      mobile: '',
+      previousGymExperience: false,
+      reference: '',
+      fitnessGoal: '',
+      target: '',
+      preferredTimeSlot: '',
+      note: ''
+    });
+  }, [enquiry, reset]);
+
   const onSubmit: SubmitHandler<EnquiryFormInputs> = data => {
-    dispatch(createEnquiry(data));
+    if (data._id) {
+      dispatch(updateEnquiry(data));
+    } else {
+      dispatch(createEnquiry(data));
+    }
     onClose();
   };
 
@@ -72,6 +92,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose }) => {
             <label className="mb-2.5 block text-black dark:text-white">Previous Gym Experience</label>
             <select
               {...register('previousGymExperience', { required: true })}
+              defaultValue={enquiry?.previousGymExperience ? "true" : "false"}
               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             >
               <option value="">Select an option</option>
