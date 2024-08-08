@@ -17,7 +17,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
     defaultValues: enquiry || {
       fullName: '',
       mobile: '',
-      previousGymExperience: false,
+      previousGymExperience: '',
       reference: '',
       fitnessGoal: '',
       target: '',
@@ -32,7 +32,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
     reset(enquiry || {
       fullName: '',
       mobile: '',
-      previousGymExperience: false,
+      previousGymExperience: '',
       reference: '',
       fitnessGoal: '',
       target: '',
@@ -92,7 +92,6 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
             <label className="mb-2.5 block text-black dark:text-white">Previous Gym Experience</label>
             <select
               {...register('previousGymExperience', { required: true })}
-              defaultValue={enquiry?.previousGymExperience ? "true" : "false"}
               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             >
               <option value="">Select an option</option>
@@ -136,12 +135,14 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
 
           <div className="mb-4.5">
             <label className="mb-2.5 block text-black dark:text-white">Preferred Timing Slot</label>
-            <input
+            <select
               {...register('preferredTimeSlot', { required: true })}
-              type="text"
-              placeholder="Enter your preferred timing slot (morning/evening)"
               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            />
+            >
+              <option value="">Select an option</option>
+              <option value="Morning">Morning</option>
+              <option value="Evening">Evening</option>
+            </select>
             {errors.preferredTimeSlot && <span className="text-red-500">Preferred Timing Slot is required</span>}
           </div>
 

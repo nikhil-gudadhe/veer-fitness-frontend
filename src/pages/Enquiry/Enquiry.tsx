@@ -1,17 +1,19 @@
-// EnquiryPage.tsx
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store/store';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../../store/store';
 import { EnquiryFormInputs } from '../../types/EnquiryFormInputs';
 import EnquiryModal from './EnquiryModal';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import EnquiryList from './EnquiryList';
-import { createEnquiry, updateEnquiry } from '../../../store/Slices/enquirySlice';
+import { createEnquiry, updateEnquiry, resetSuccess, resetError} from '../../../store/Slices/enquirySlice';
+import { toast } from 'react-toastify';
 
 const Enquiry: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEnquiry, setCurrentEnquiry] = useState<EnquiryFormInputs | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+
+  const { success, error } = useSelector((state: RootState) => state.enquiries);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -34,6 +36,18 @@ const Enquiry: React.FC = () => {
     setCurrentEnquiry(enquiry);
     handleOpenModal();
   };
+
+  useEffect(() => {
+    if (success) {
+      toast.success(success);
+      dispatch(resetSuccess());
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch(resetError());
+    }
+  }, [success, error, dispatch]);
 
   return (
     <>

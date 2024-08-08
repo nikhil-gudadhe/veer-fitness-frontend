@@ -4,6 +4,7 @@ import { fetchEnquiries } from '../../../store/Slices/enquirySlice';
 import { EnquiryFormInputs } from '../../types/EnquiryFormInputs.ts';
 import { RootState, AppDispatch } from '../../../store/store.ts';
 import Loader from '../../common/Loader';
+import { toast } from 'react-toastify';
 
 interface EnquiryListProps {
     onEdit: (enquiry: EnquiryFormInputs) => void;
@@ -16,15 +17,11 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
     useEffect(() => {
         dispatch(fetchEnquiries());
     }, [dispatch]);
-
+    
     if (loading) {
         return <Loader />;
     }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
+    
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">

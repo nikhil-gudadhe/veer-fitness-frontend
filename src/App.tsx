@@ -3,25 +3,29 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from '../store/Slices/authSlice';
 import { AppDispatch, RootState } from '../store/store.ts';
-
-import Loader from './common/Loader';
-import PageTitle from './components/PageTitle';
-import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
-import ECommerce from './pages/Dashboard/ECommerce';
-import Calendar from './pages/Calendar';
-import Profile from './pages/Profile.tsx';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout.tsx';
-import Tables from './pages/Tables.tsx';
-import Settings from './pages/Settings.tsx';
-import Chart from './pages/Chart.tsx';
-import Alerts from './pages/UiElements/Alerts.tsx';
-import Buttons from './pages/UiElements/Buttons.tsx';
-import DefaultLayout from './layout/DefaultLayout';
-import AuthLayout from './components/AuthLayout';
-//import AllEnquries from './pages/Enquiry/AllEnquries.tsx';
-import Enquiry from './pages/Enquiry/Enquiry.tsx';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';  
+import { 
+  Loader, 
+  PageTitle,
+  SignIn,
+  SignUp,
+  ECommerce,
+  Calendar,
+  Profile,
+  FormElements,
+  FormLayout,
+  Tables,
+  Settings,
+  Chart,
+  Alerts,
+  Buttons,
+  DefaultLayout,
+  AuthLayout,
+  Enquiry,
+  Invoice,
+  Dropdowns 
+} from './components/index.ts';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,11 +35,17 @@ function App() {
   useEffect(() => { dispatch(getCurrentUser());
   }, [dispatch]);
 
-  console.log('isAuthenticated', isAuthenticated)
+  //console.log('isAuthenticated', isAuthenticated)
 
   return loading ? (
     <Loader />
   ) : (
+    <>
+    
+    <ToastContainer 
+    position="bottom-right"
+    />
+
     <Routes>
       <Route
         path="signin"
@@ -144,6 +154,33 @@ function App() {
         </DefaultLayout>
       } />
 
+      <Route path="ui/invoice" element={
+        <DefaultLayout>
+          <AuthLayout authentication={true}>
+          <PageTitle title="Invoice | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          <Invoice />
+          </AuthLayout>
+        </DefaultLayout>
+      } />
+
+      <Route path="ui/dropdowns" element={
+        <DefaultLayout>
+          <AuthLayout authentication={true}>
+          <PageTitle title="Invoice | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          <Dropdowns />
+          </AuthLayout>
+        </DefaultLayout>
+      } />
+
+      <Route path="ui/loader" element={
+        <DefaultLayout>
+          <AuthLayout authentication={true}>
+          <PageTitle title="Invoice | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          <Loader />
+          </AuthLayout>
+        </DefaultLayout>
+      } />
+
       <Route path="ui/alerts" element={
         <DefaultLayout>
           <AuthLayout authentication={true}>
@@ -167,6 +204,7 @@ function App() {
         element={<Navigate to={isAuthenticated ? "/" : "/signin"} replace />}
       />
     </Routes>
+    </>
   );
 }
 

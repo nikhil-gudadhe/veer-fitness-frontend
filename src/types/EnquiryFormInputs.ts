@@ -2,7 +2,7 @@ export interface EnquiryFormInputs {
     _id?: string;
     fullName: string;
     mobile: string;
-    previousGymExperience: boolean;
+    previousGymExperience: string;
     reference?: string;
     fitnessGoal: string;
     target: string;
