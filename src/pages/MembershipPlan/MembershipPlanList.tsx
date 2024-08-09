@@ -4,7 +4,7 @@ import { getExcerpt } from '../../../helpers/utilityInstance'
 import { fetchMembershipPlans } from '../../../store/Slices/membershipPlanSlice';
 import { MembershipPlanFormInputs } from '../../types/MembershipPlanFormInputs';
 import { RootState, AppDispatch } from '../../../store/store';
-import { Loader } from '../../components';
+import Spinner from '../../components/Spinner';
 
 interface MembershipPlanListProps {
     onEdit: (membershipPlan: MembershipPlanFormInputs) => void;
@@ -19,7 +19,7 @@ const MembershipPlanList: React.FC<MembershipPlanListProps> = ({ onEdit }) => {
     }, [dispatch]);
     
     if (loading) {
-        return <Loader />;
+        return <Spinner />;
     }
 
     return (

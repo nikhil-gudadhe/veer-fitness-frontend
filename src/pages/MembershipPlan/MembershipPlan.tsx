@@ -20,7 +20,8 @@ const MembershipPlan: React.FC = () => {
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false);
+      setIsModalOpen(false);
+      setCurrentMembershipPlan(null);
     };
 
     const handleAddMembershipPlan = (membershipPlan: MembershipPlanFormInputs) => {
@@ -49,6 +50,7 @@ const MembershipPlan: React.FC = () => {
         }
       }, [success, error, dispatch]);
     
+      
 
     return (
         <>

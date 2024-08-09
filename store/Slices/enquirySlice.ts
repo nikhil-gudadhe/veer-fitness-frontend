@@ -26,11 +26,17 @@ export const createEnquiry = createAsyncThunk('enquiries/createEnquiry', async (
   return response.data.data;
 });
 
-export const updateEnquiry = createAsyncThunk('enquiries/updateEnquiry', async (updatedEnquiry: EnquiryFormInputs, { dispatch }) => {
+// export const updateEnquiry = createAsyncThunk('enquiries/updateEnquiry', async (updatedEnquiry: EnquiryFormInputs, { dispatch }) => {
+//   const response = await axiosInstance.patch(`/enquiries/edit/${updatedEnquiry._id}`, updatedEnquiry);
+//   //dispatch(fetchEnquiries()); // Re-fetch enquiries after updating
+//   return response.data.data;
+// });
+
+export const updateEnquiry = createAsyncThunk('enquiries/updateEnquiry', async (updatedEnquiry: EnquiryFormInputs) => {
   const response = await axiosInstance.patch(`/enquiries/edit/${updatedEnquiry._id}`, updatedEnquiry);
-  dispatch(fetchEnquiries()); // Re-fetch enquiries after updating
   return response.data.data;
 });
+
 
 const enquirySlice = createSlice({
   name: 'enquiries',
@@ -82,6 +88,7 @@ const enquirySlice = createSlice({
         }
         state.success = 'Enquiry updated successfully';
       })
+
       .addCase(updateEnquiry.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to update enquiry';

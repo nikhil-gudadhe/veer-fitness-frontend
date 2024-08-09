@@ -21,6 +21,7 @@ const Enquiry: React.FC = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setCurrentEnquiry(null)
   };
 
   const handleAddEnquiry = (enquiry: EnquiryFormInputs) => {

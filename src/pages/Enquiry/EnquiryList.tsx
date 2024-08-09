@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchEnquiries } from '../../../store/Slices/enquirySlice';
 import { EnquiryFormInputs } from '../../types/EnquiryFormInputs.ts';
 import { RootState, AppDispatch } from '../../../store/store.ts';
-import Loader from '../../common/Loader';
+import Spinner from '../../components/Spinner.tsx';
 
 interface EnquiryListProps {
     onEdit: (enquiry: EnquiryFormInputs) => void;
@@ -18,7 +18,7 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
     }, [dispatch]);
     
     if (loading) {
-        return <Loader />;
+        return <Spinner />
     }
     
   return (
