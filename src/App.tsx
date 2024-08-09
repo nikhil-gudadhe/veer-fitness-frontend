@@ -23,9 +23,11 @@ import {
   DefaultLayout,
   AuthLayout,
   Enquiry,
+  MembershipPlan,
   Invoice,
   Dropdowns 
 } from './components/index.ts';
+
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -86,6 +88,18 @@ function App() {
             <AuthLayout authentication={true}>
               <PageTitle title="Enquiry Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <Enquiry />
+            </AuthLayout>
+          </DefaultLayout>
+        }
+      />
+
+      <Route
+        path="membership-plan"
+        element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Membership Plan Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <MembershipPlan />
             </AuthLayout>
           </DefaultLayout>
         }

@@ -17,6 +17,7 @@ import AuthLayout from '../components/AuthLayout';
 import Enquiry from '../pages/Enquiry/Enquiry.tsx';
 import Invoice from '../pages/ProElements/Invoice.tsx';
 import Dropdowns from '../pages/ProElements/Dropdowns.tsx';
+import MembershipPlan from '../pages/MembershipPlan/MembershipPlan.tsx';
 
 export {
     Loader,
@@ -36,6 +37,7 @@ export {
     DefaultLayout,
     AuthLayout,
     Enquiry,
+    MembershipPlan,
     Invoice,
     Dropdowns
 };

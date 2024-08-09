@@ -95,6 +95,8 @@ const Enquiry: React.FC = () => {
       <div className="flex flex-col gap-10 mt-5">
         <EnquiryList onEdit={handleEditEnquiry}/>
       </div>
+
+      
     </>
   );
 };

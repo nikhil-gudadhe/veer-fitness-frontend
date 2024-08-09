@@ -1,27 +1,28 @@
 import React, {useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEnquiries } from '../../../store/Slices/enquirySlice';
-import { EnquiryFormInputs } from '../../types/EnquiryFormInputs.ts';
-import { RootState, AppDispatch } from '../../../store/store.ts';
-import Loader from '../../common/Loader';
+import { getExcerpt } from '../../../helpers/utilityInstance'
+import { fetchMembershipPlans } from '../../../store/Slices/membershipPlanSlice';
+import { MembershipPlanFormInputs } from '../../types/MembershipPlanFormInputs';
+import { RootState, AppDispatch } from '../../../store/store';
+import { Loader } from '../../components';
 
-interface EnquiryListProps {
-    onEdit: (enquiry: EnquiryFormInputs) => void;
+interface MembershipPlanListProps {
+    onEdit: (membershipPlan: MembershipPlanFormInputs) => void;
 }
 
-const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
+const MembershipPlanList: React.FC<MembershipPlanListProps> = ({ onEdit }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { enquiries, loading } = useSelector((state: RootState) => state.enquiries);
+    const { membershipPlans, loading } = useSelector((state: RootState) => state.plans);
 
     useEffect(() => {
-        dispatch(fetchEnquiries());
+        dispatch(fetchMembershipPlans());
     }, [dispatch]);
     
     if (loading) {
         return <Loader />;
     }
-    
-  return (
+
+    return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
@@ -31,10 +32,13 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
                 Name
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Mobile
+                Descrption
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Date
+                Duration
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Price
               </th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
@@ -42,26 +46,31 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
             </tr>
           </thead>
           <tbody>
-            {enquiries.map((enquiry) => (
-              <tr key={enquiry._id}>
+            {membershipPlans.map((plan) => (
+              <tr key={plan._id}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
-                    {enquiry.fullName}
+                    {plan.name}
                   </h5>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {enquiry.mobile}
+                    {getExcerpt(plan.description, 50)}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium`}>
-                    {enquiry.createdAt ? new Date(enquiry.createdAt).toLocaleDateString() : 'N/A'}
+                    {plan.duration}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium`}>
+                  ₹{plan.price}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button  onClick={() => onEdit(enquiry)}
+                    <button onClick={() => onEdit(plan)}
                     className="hover:text-primary">
                       <svg 
                          className="fill-current" 
@@ -123,7 +132,6 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
                       </svg>
                     </button>
                   </div>
-                  
                 </td>
               </tr>
             ))}
@@ -131,7 +139,8 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
         </table>
       </div>
     </div>
-  );
-};
+    );
+    
+}
 
-export default EnquiryList;
+export default MembershipPlanList;
