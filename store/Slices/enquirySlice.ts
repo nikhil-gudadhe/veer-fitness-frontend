@@ -26,12 +26,6 @@ export const createEnquiry = createAsyncThunk('enquiries/createEnquiry', async (
   return response.data.data;
 });
 
-// export const updateEnquiry = createAsyncThunk('enquiries/updateEnquiry', async (updatedEnquiry: EnquiryFormInputs, { dispatch }) => {
-//   const response = await axiosInstance.patch(`/enquiries/edit/${updatedEnquiry._id}`, updatedEnquiry);
-//   //dispatch(fetchEnquiries()); // Re-fetch enquiries after updating
-//   return response.data.data;
-// });
-
 export const updateEnquiry = createAsyncThunk('enquiries/updateEnquiry', async (updatedEnquiry: EnquiryFormInputs) => {
   const response = await axiosInstance.patch(`/enquiries/edit/${updatedEnquiry._id}`, updatedEnquiry);
   return response.data.data;

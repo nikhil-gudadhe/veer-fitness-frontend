@@ -50,8 +50,6 @@ const MembershipPlan: React.FC = () => {
         }
       }, [success, error, dispatch]);
     
-      
-
     return (
         <>
             <Breadcrumb pageName="Membership Plan" />
@@ -74,7 +72,6 @@ const MembershipPlan: React.FC = () => {
             </div>
                         
             <MembershipPlanModel isOpen={isModalOpen} onClose={handleCloseModal} membershipPlan={currentMembershipPlan} onSubmit={handleAddMembershipPlan} />
-            
             <div className="flex flex-col gap-10 mt-5">
                 <MembershipPlanList onEdit={handleEditMembershipPlan} />
             </div>

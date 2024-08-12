@@ -15,6 +15,7 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
 
     useEffect(() => {
         dispatch(fetchEnquiries());
+        //console.log("rendered")
     }, [dispatch]);
     
     if (loading) {

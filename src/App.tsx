@@ -23,11 +23,12 @@ import {
   DefaultLayout,
   AuthLayout,
   Enquiry,
+  Member,
   MembershipPlan,
   Invoice,
   Dropdowns 
 } from './components/index.ts';
-
+import DataTable from './pages/ProElements/DataTable.tsx';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -88,6 +89,18 @@ function App() {
             <AuthLayout authentication={true}>
               <PageTitle title="Enquiry Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <Enquiry />
+            </AuthLayout>
+          </DefaultLayout>
+        }
+      />
+
+      <Route
+        path="all-members"
+        element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Members Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <Member />
             </AuthLayout>
           </DefaultLayout>
         }
@@ -182,6 +195,15 @@ function App() {
           <AuthLayout authentication={true}>
           <PageTitle title="Invoice | TailAdmin - Tailwind CSS Admin Dashboard Template" />
           <Dropdowns />
+          </AuthLayout>
+        </DefaultLayout>
+      } />
+
+      <Route path="ui/datatable" element={
+        <DefaultLayout>
+          <AuthLayout authentication={true}>
+          <PageTitle title="DataTable | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          <DataTable />
           </AuthLayout>
         </DefaultLayout>
       } />

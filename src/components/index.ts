@@ -18,7 +18,7 @@ import Enquiry from '../pages/Enquiry/Enquiry.tsx';
 import Invoice from '../pages/ProElements/Invoice.tsx';
 import Dropdowns from '../pages/ProElements/Dropdowns.tsx';
 import MembershipPlan from '../pages/MembershipPlan/MembershipPlan.tsx';
-
+import Member from '../pages/Member/Member.tsx';
 export {
     Loader,
     PageTitle,
@@ -37,7 +37,8 @@ export {
     DefaultLayout,
     AuthLayout,
     Enquiry,
+    Member,
     MembershipPlan,
     Invoice,
-    Dropdowns
+    Dropdowns,
 };
