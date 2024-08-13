@@ -1,27 +1,54 @@
 import React, {useState, useEffect} from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../../store/store';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'
 import MemberModel from './MemberModel';
-import { MemberPlanFormInputs } from '../../types/MemberPlanFormInputs';
+import { MemberFormInputs } from '../../types/MemberFormInputs';
+import { registerMember, updateMember, resetSuccess, resetError} from '../../../store/Slices/memberSlice';
+import { toast } from 'react-toastify';
+import MemberList from './MemberList';
 
 const Member: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentMember, setCurrentMember] = useState<MemberFormInputs | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
 
+    const { success, error } = useSelector((state: RootState) => state.members);
+
     const handleCloseModal = () => {
       setIsModalOpen(false);
-      //setCurrentMembershipPlan(null);
+      setCurrentMember(null);
     };
 
-    const handleAddMember = (member: MemberPlanFormInputs) => {
+    const handleAddMember = (member: MemberFormInputs) => {
         if (member._id) {
-            //dispatch(updateMembershipPlan(membershipPlan));
+            dispatch(updateMember(member));
           } else {
-            //dispatch(createMembershipPlan(membershipPlan));
+            dispatch(registerMember(member));
           }
         handleCloseModal();
-      };
+    };
+
+    const handleEditMember = (enquiry: MemberFormInputs) => {
+      setCurrentMember(enquiry);
+      handleOpenModal();
+    };
+  
+    useEffect(() => {
+      if (success) {
+        toast.success(success);
+        dispatch(resetSuccess());
+      }
+  
+      if (error) {
+        toast.error(error);
+        dispatch(resetError());
+      }
+    }, [success, error, dispatch]);
+  
 
   return (
     <>
@@ -44,11 +71,10 @@ const Member: React.FC = () => {
     </div>
     </div>
                 
-    {/* <MembershipPlanModel  membershipPlan={currentMembershipPlan} onSubmit={handleAddMembershipPlan} /> */}
-    <MemberModel isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddMember} />
+    <MemberModel isOpen={isModalOpen} member={currentMember} onClose={handleCloseModal} onSubmit={handleAddMember} />
+    
     <div className="flex flex-col gap-10 mt-5">
-        Lorem ipsum set dolor amet
-        {/* <MembershipPlanList onEdit={handleEditMembershipPlan} /> */}
+        <MemberList onEdit={handleEditMember} />
     </div>
     </>
   )

@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authSliceReducer from './Slices/authSlice';
 import enquirySliceReducer from './Slices/enquirySlice';
 import membershipPlanSliceReducer from './Slices/membershipPlanSlice'
+import memberSliceReducer from './Slices/memberSlice'
 
 const store = configureStore({
   reducer: {
     auth: authSliceReducer,
     enquiries: enquirySliceReducer,
-    plans: membershipPlanSliceReducer
+    plans: membershipPlanSliceReducer,
+    members: memberSliceReducer
   },
 });
 
