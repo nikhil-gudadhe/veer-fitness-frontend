@@ -32,11 +32,11 @@ const Member: React.FC = () => {
         handleCloseModal();
     };
 
-    const handleEditMember = (enquiry: MemberFormInputs) => {
-      setCurrentMember(enquiry);
+    const handleEditMember = (member: MemberFormInputs) => {
+      setCurrentMember(member);
       handleOpenModal();
     };
-  
+
     useEffect(() => {
       if (success) {
         toast.success(success);

@@ -18,6 +18,7 @@ const initialState: MemberState = {
 
 export const fetchMembers = createAsyncThunk('members/fetchMembers', async () => {
     const response = await axiosInstance.get('/members/all-members');
+    console.log(response.data.data)
     return response.data.data;
 });
 

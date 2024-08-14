@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { AppDispatch, RootState } from '../../../store/store';
-import {fetchMembershipPlans} from '../../../store/Slices/membershipPlanSlice';
-import {registerMember, updateMember} from '../../../store/Slices/memberSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../store/store';
+import { registerMember, updateMember } from '../../../store/Slices/memberSlice';
 import { MemberFormInputs } from '../../types/MemberFormInputs';
 
 interface MemberPlanModalProps {
@@ -23,16 +22,12 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
             gender: '',
             age: '',
             address: '',
-            planId: '',
         },
     });
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const { membershipPlans } = useSelector((state: RootState) => state.plans, shallowEqual);
-
-     useEffect(() => {
-        dispatch(fetchMembershipPlans());
+    useEffect(() => {
         reset(member || {
             firstName: '',
             lastName: '',
@@ -41,14 +36,8 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
             gender: '',
             age: '',
             address: '',
-            planId: '',
         });
-    }, [member, reset, dispatch]);
-
-    console.log('Member:', member);
-    console.log('Membership Plans:', membershipPlans);
-
-    console.log(membershipPlans)
+    }, [member, reset]);
 
     const onSubmit: SubmitHandler<MemberFormInputs> = (data) => {
         if (data._id) {
@@ -96,7 +85,7 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
                     placeholder="Enter last name" 
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary" 
                 />
-                {errors.firstName && <span className="text-red-500">Last name is required</span>}
+                {errors.lastName && <span className="text-red-500">Last name is required</span>}
                 </div>
             </div>
 
@@ -172,12 +161,12 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
                 ></textarea>
             </div>
 
-            <div className="mb-5.5">
+            {/* <div className="mb-5.5">
             <label className="mb-2.5 block text-black dark:text-white">Select Plan</label>
             <div className="relative z-20 bg-transparent dark:bg-form-input">
                 <select
                     {...register('planId', { required: true })}
-                    defaultValue={member?.planId || ''}
+                    defaultValue={member?.membership?.plan?._id || ''}
                     className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary text-black dark:text-white"
                 >
                     <option value="" disabled>Select a plan</option>
@@ -201,7 +190,7 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
                     </svg>
                 </span>
             </div>
-            </div>
+            </div> */}
 
             <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
                 Submit
@@ -212,4 +201,4 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
   )
 }
 
-export default MemberModel
+export default MemberModel;

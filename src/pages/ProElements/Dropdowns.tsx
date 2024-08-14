@@ -1,11 +1,25 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 
 const Dropdowns: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -14,14 +28,14 @@ const Dropdowns: React.FC = () => {
         <h3 className="font-medium text-black dark:text-white">Dropdowns Style 3</h3>
       </div>
       <div className="p-4 sm:p-6 xl:p-10">
-        <div className="relative mb-50 inline-block">
+        <div ref={dropdownRef} className="relative mb-50 inline-block">
           <button
             className="inline-flex items-center gap-2.5 rounded-md bg-primary py-3 px-5.5 font-medium text-white hover:bg-opacity-90"
             onClick={toggleDropdown}
           >
             Dropdown Button
             <svg
-              className="fill-current duration-200 ease-linear"
+              className={`fill-current duration-200 ease-linear ${isDropdownOpen ? 'rotate-180' : 'rotate-0'}`}
               width="12"
               height="7"
               viewBox="0 0 12 7"
