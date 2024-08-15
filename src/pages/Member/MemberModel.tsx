@@ -42,6 +42,7 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
     const onSubmit: SubmitHandler<MemberFormInputs> = (data) => {
         if (data._id) {
             dispatch(updateMember(data));
+            
         } else {
             dispatch(registerMember(data));
         }

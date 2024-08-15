@@ -25,6 +25,7 @@ import {
   Enquiry,
   Member,
   MembershipPlan,
+  MembershipSetting,
   Invoice,
   Dropdowns 
 } from './components/index.ts';
@@ -35,7 +36,7 @@ function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const loading = useSelector((state: RootState) => state.auth.loading);
 
-  useEffect(() => { dispatch(getCurrentUser());
+  useEffect(() => {dispatch(getCurrentUser());
   }, [dispatch]);
 
   //console.log('isAuthenticated', isAuthenticated)
@@ -113,6 +114,18 @@ function App() {
             <AuthLayout authentication={true}>
               <PageTitle title="Membership Plan Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <MembershipPlan />
+            </AuthLayout>
+          </DefaultLayout>
+        }
+      />
+
+      <Route
+        path="membership-setting/:memberId"
+        element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Membership Setting Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <MembershipSetting />
             </AuthLayout>
           </DefaultLayout>
         }

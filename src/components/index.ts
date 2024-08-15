@@ -19,6 +19,7 @@ import Invoice from '../pages/ProElements/Invoice.tsx';
 import Dropdowns from '../pages/ProElements/Dropdowns.tsx';
 import MembershipPlan from '../pages/MembershipPlan/MembershipPlan.tsx';
 import Member from '../pages/Member/Member.tsx';
+import MembershipSetting from '../pages/Member/MembershipSetting.tsx';
 export {
     Loader,
     PageTitle,
@@ -39,6 +40,7 @@ export {
     Enquiry,
     Member,
     MembershipPlan,
+    MembershipSetting,
     Invoice,
     Dropdowns,
 };
