@@ -4,6 +4,7 @@ import {MemberFormInputs} from '../../src/types/MemberFormInputs';
 
 interface MemberState {
     members: MemberFormInputs[];
+    currentMember?: MemberFormInputs;
     loading: boolean;
     error: string | null;
     success: string | null;
@@ -11,6 +12,7 @@ interface MemberState {
 
 const initialState: MemberState = {
     members: [],
+    currentMember: undefined,
     loading: false,
     error: null,
     success: null,
@@ -18,7 +20,6 @@ const initialState: MemberState = {
 
 export const fetchMembers = createAsyncThunk('members/fetchMembers', async () => {
     const response = await axiosInstance.get('/members/all-members');
-    console.log(response.data.data)
     return response.data.data;
 });
 
@@ -47,10 +48,27 @@ export const deleteMember = createAsyncThunk('members/deleteMember', async (id: 
     return id;
 });
 
+// export const fetchMemberById = createAsyncThunk('members/fetchMemberById',async (id: string) => {
+//     const response = await axiosInstance.get(`/members/${id}`);
+//     return response.data.data;
+// });
+
+export const fetchMemberById = createAsyncThunk('members/fetchMemberById', async (id: string, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/members/${id}`);
+        return response.data.data;
+    } catch (error) {
+        //error.response?.data?.message
+        return rejectWithValue(error || 'Failed to fetch member');
+    }
+});
+
 export const extendMembership = createAsyncThunk('members/extendMembership', async (data: { memberId: string, duration: number, newPlanId?: string }) => {
     const response = await axiosInstance.post('/members/extend-membership', data);
     return response.data.data;
 });
+
+
 const memberSlice = createSlice({
     name: 'members',
     initialState,
@@ -61,9 +79,13 @@ const memberSlice = createSlice({
         resetError(state) {
             state.error = null;
         },
+        clearCurrentMember(state) {
+            state.currentMember = undefined;
+        },
     },
     extraReducers: (builder) => {
         builder
+        
             .addCase(fetchMembers.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -133,7 +155,44 @@ const memberSlice = createSlice({
             .addCase(extendMembership.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Failed to extend membership';
-            });
+            })
+            // Handle fetching a single member by ID
+            .addCase(fetchMemberById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchMemberById.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
+                state.loading = false;
+                state.currentMember = action.payload;
+                state.success = 'Member fetched successfully';
+            })
+            .addCase(fetchMemberById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Failed to fetch member';
+            })
+            // .addCase(fetchMemberById.pending, (state) => {
+            //     state.loading = true;
+            //     state.error = null;
+            // })
+            // .addCase(fetchMemberById.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
+            //     state.loading = false;
+            //     state.currentMember = action.payload; // Updated from selectedMember
+            //     state.success = 'Member fetched successfully';
+            // })
+            // .addCase(fetchMemberById.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
+            //     state.loading = false;
+            //     const memberIndex = state.members.findIndex(member => member._id === action.payload._id);
+            //     if (memberIndex !== -1) {
+            //       state.members[memberIndex] = action.payload;
+            //     } else {
+            //       state.members.push(action.payload);
+            //     }
+            //     state.success = 'Member fetched successfully';
+            // })
+            // .addCase(fetchMemberById.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.error.message || 'Failed to fetch member';
+            // });
     },
 });
 

@@ -1,11 +1,34 @@
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import React, {useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../../store/store';
+import { fetchMemberById } from '../../../store/Slices/memberSlice';
 import { useParams } from 'react-router-dom';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
-const MembershipSetting = () => {
-  const { memberId } = useParams();
+const MembershipSetting: React.FC = () => {
+  const { memberId } = useParams<{ memberId: string }>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentMember, loading, error } = useSelector((state: RootState) => state.members);
 
-  // Now you can use memberId to fetch or display data
-  console.log(memberId);
+    useEffect(() => {
+        if (memberId) {
+            dispatch(fetchMemberById(memberId));
+        }
+  }, [dispatch, memberId]);
+
+  if (loading) {
+    return <></>;
+  }
+
+  if (error) {
+      return <div>Error: {error}</div>;
+  }
+
+  // if (!members) {
+  //     return <div>No member data available</div>;
+  // }
+
+  console.log(currentMember?.membership?.plan.name)
 
   return (
     <>
@@ -13,7 +36,7 @@ const MembershipSetting = () => {
         <Breadcrumb pageName="Settings" />
 
         <div className="grid grid-cols-5 gap-8">
-          <div className="col-span-5 xl:col-span-3">
+          {/* <div className="col-span-5 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
@@ -62,7 +85,7 @@ const MembershipSetting = () => {
                           name="fullName"
                           id="fullName"
                           placeholder="Devid Jhon"
-                          defaultValue={memberId}
+                          defaultValue={currentMember?.firstName}
                         />
                       </div>
                     </div>
@@ -213,12 +236,12 @@ const MembershipSetting = () => {
                 </form>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="col-span-5 xl:col-span-2">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
-                  Your Photo
+                  Current Plan 
                 </h3>
               </div>
               <div className="p-7">
@@ -229,7 +252,7 @@ const MembershipSetting = () => {
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
-                        Edit your photo
+                      {currentMember?.membership?.plan.name}
                       </span>
                       <span className="flex gap-2.5">
                         <button className="text-sm hover:text-primary">
