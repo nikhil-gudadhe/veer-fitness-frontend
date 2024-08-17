@@ -116,7 +116,7 @@ const MembershipPlanModel: React.FC<MembershipPlanModalProps> = ({ isOpen, onClo
                                 ₹
                             </span>
                             <input
-                                {...register('price', { required: true })}
+                                {...register('price', { required: true, min: 0 })}
                                 type="number"
                                 placeholder="Enter membership plan price"
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 pl-10 pr-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
