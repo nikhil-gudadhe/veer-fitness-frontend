@@ -39,10 +39,16 @@ const MemberList: React.FC<MemberListProps> = ({ onEdit }) => {
             <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
                 <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                Name
+                First Name
+                </th>
+                <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                Last Name
                 </th>
                 <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Mobile
+                </th>
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Gender
                 </th>
                 <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Plan
@@ -60,9 +66,19 @@ const MemberList: React.FC<MemberListProps> = ({ onEdit }) => {
                     {member.firstName}
                     </h5>
                 </td>
+                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-black dark:text-white">
+                    {member.lastName}
+                    </h5>
+                </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
                     {member.mobile}
+                    </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    <p className="text-black dark:text-white">
+                    {member.gender.charAt(0).toUpperCase() + member.gender.slice(1)}
                     </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

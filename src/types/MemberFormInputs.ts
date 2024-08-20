@@ -26,5 +26,6 @@ export interface MemberFormInputs {
   gender: string;
   age: string;
   address: string;
+  planId?: string // Passing planId for user registeration
   membership?: Membership; // Adding the membership field
 }

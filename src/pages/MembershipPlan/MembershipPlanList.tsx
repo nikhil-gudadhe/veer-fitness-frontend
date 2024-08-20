@@ -16,7 +16,6 @@ const MembershipPlanList: React.FC<MembershipPlanListProps> = ({ onEdit }) => {
 
     useEffect(() => {
         dispatch(fetchMembershipPlans());
-        console.log("rendered")
     }, [dispatch]);
     
     if (loading) {

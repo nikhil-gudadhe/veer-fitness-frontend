@@ -35,9 +35,14 @@ const MembershipSetting: React.FC = () => {
 
   useEffect(() => {
     if (currentMember) {
+      // Get the latest extension if available
+      const latestExtension = currentMember.membership?.extensions?.slice(-1)[0];
+      const selectedPlanId = currentMember.membership?.plan._id;
+      const selectedDuration = latestExtension ? latestExtension.duration : currentMember.membership?.plan.duration;
+
       reset({
-        planId: currentMember?.membership?.plan._id || '',
-        duration: currentMember?.membership?.plan.duration || 1,
+        planId: selectedPlanId || '',
+        duration: selectedDuration || 1,
       });
     }
   }, [currentMember, reset]);
@@ -46,20 +51,25 @@ const MembershipSetting: React.FC = () => {
   const selectedDuration = watch('duration');
 
   const onSubmit: SubmitHandler<MembershipSettingFormInputs> = (data) => {
-    if (currentMember?._id) {
-      dispatch(extendMembership({
-        memberId: currentMember._id,
-        duration: data.duration,
-        newPlanId: data.planId,
-      })).then(() => {
-        console.log("Membership extended successfully");
-        navigate('/members');
-      }).catch((error) => {
-        console.error("Error extending membership:", error);
-      });
-    } else {
-      console.error("No member ID available for extending membership");
+    const requestData: any = {
+        memberId: currentMember?._id,
+        duration: Number(data.duration),
+    };
+
+    if (data.planId !== currentMember?.membership?.plan._id) {
+        requestData.newPlanId = data.planId; // Pass newPlanId only if it has been changed
     }
+
+    console.log("requestData: ", requestData)
+
+    dispatch(extendMembership(requestData))
+        .then(() => {
+            console.log("Membership extended/updated successfully");
+            //navigate('/members');
+        })
+        .catch((error) => {
+            console.error("Error extending/updating membership:", error);
+        });
   };
 
   return (
@@ -171,7 +181,7 @@ const MembershipSetting: React.FC = () => {
                       className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
                       type="submit"
                     >
-                      Save
+                      Renew Membership
                     </button>
                   </div>
                 </form>
@@ -179,24 +189,93 @@ const MembershipSetting: React.FC = () => {
             </div>
           </div>
 
-
-
           {/* Reserved Section */}
 
-          {currentMember?.membership?.extensions && currentMember.membership.extensions.length > 0 && (
-            <div className="mt-6">
-              <h4 className="font-medium text-black dark:text-white">
-                Extension History
-              </h4>
-              <ul className="list-disc pl-5 text-black dark:text-white">
-                {currentMember.membership.extensions.map((extension, index) => (
-                  <li key={index}>
-                    Extended on: {new Date(extension.extendedAt).toLocaleDateString()} for {extension.duration} month(s), new end date: {new Date(extension.newEndDate).toLocaleDateString()}
-                  </li>
-                ))}
-              </ul>
+          <div className="col-span-5 xl:col-span-2">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                <h3 className="font-medium text-black dark:text-white">
+                  Current Plan  
+                </h3>
+              </div>
+              <div className="p-7">
+                <h4 className="mb-3 text-xl font-semibold text-black dark:text-white"> 
+                  {currentMember?.membership?.plan.name}
+                  </h4>
+                  <p>{currentMember?.membership?.plan.description}</p>
+                  <ol className="flex flex-wrap items-center gap-3 pt-5">
+                    <li className="flex items-center gap-3.5 font-medium text-black dark:text-white">
+                      Plan Duration:
+                    </li>
+                    <li>
+                        <span>{currentMember?.membership?.plan.duration} Months</span>
+                    </li>
+                  </ol>
+                  <ol className="flex flex-wrap items-center gap-3 pt-2">
+                    <li className="flex items-center gap-3.5 font-medium text-black dark:text-white">
+                      Started On:
+                    </li>
+                    <li>
+                        <span>
+                          {currentMember?.membership?.startDate 
+                          ? new Date(currentMember.membership.startDate).toLocaleDateString() 
+                          : 'Start date not available'}
+                        </span>
+                    </li>
+                  </ol>
+                  <ol className="flex flex-wrap items-center gap-3 pt-2">
+                    <li className="flex items-center gap-3.5 font-medium text-black dark:text-white">
+                      Ends On:
+                    </li>
+                    <li>
+                        <span>
+                          {currentMember?.membership?.endDate 
+                          ? new Date(currentMember.membership.endDate).toLocaleDateString() 
+                          : 'End date not available'}
+                        </span>
+                    </li>
+                  </ol>
+                  <ol className="flex flex-wrap items-center gap-3 pt-2">
+                    <li className="flex items-center gap-3.5 font-medium text-black dark:text-white">
+                      Expires In:
+                    </li>
+                    <li>
+                        <span>{currentMember?.membership?.endDate 
+                        ? `${Math.ceil((new Date(currentMember.membership.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} Days`
+                        : 'End date not available'}
+                        </span>
+                    </li>
+                  </ol>
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* <div className="col-span-5 xl:col-span-2">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                <h3 className="font-medium text-black dark:text-white">
+                  Membership History
+                </h3>
+              </div>
+              <div className="p-7">
+                {currentMember?.membership?.extensions && currentMember?.membership?.extensions.length > 0 ? (
+                  <ul>
+                    {currentMember.membership.extensions.map((extension, index) => (
+                      <li key={index} className="mb-4">
+                        <p>Extension {index + 1}:</p>
+                        <p>Previous End Date: {new Date(extension.previousEndDate).toLocaleDateString()}</p>
+                        <p>New End Date: {new Date(extension.newEndDate).toLocaleDateString()}</p>
+                        <p>Duration: {extension.duration} Month(s)</p>
+                        <p>Extended At: {new Date(extension.extendedAt).toLocaleDateString()}</p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No extensions found.</p>
+                )}
+              </div>
+            </div>
+          </div> */}
 
         </div>
       </div>

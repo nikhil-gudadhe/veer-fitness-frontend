@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../../store/store';
 import { registerMember, updateMember } from '../../../store/Slices/memberSlice';
 import { MemberFormInputs } from '../../types/MemberFormInputs';
-
+import { fetchMembershipPlans } from '../../../store/Slices/membershipPlanSlice';
 interface MemberPlanModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -22,28 +22,49 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
             gender: '',
             age: '',
             address: '',
+            planId: '',
         },
     });
 
     const dispatch = useDispatch<AppDispatch>();
+    const { membershipPlans } = useSelector((state: RootState) => state.plans);
 
     useEffect(() => {
-        reset(member || {
-            firstName: '',
-            lastName: '',
-            email: '',
-            mobile: '',
-            gender: '',
-            age: '',
-            address: '',
-        });
+        dispatch(fetchMembershipPlans());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (member) {
+            reset({
+                firstName: member.firstName,
+                lastName: member.lastName,
+                email: member.email,
+                mobile: member.mobile,
+                gender: member.gender,
+                age: member.age,
+                address: member.address,
+                planId: member?.membership?.plan?._id || ''
+            });
+        }
     }, [member, reset]);
 
+    // const onSubmit: SubmitHandler<MemberFormInputs> = (data) => {
+    //     if (data._id) {
+    //         dispatch(updateMember(data));
+    //         console.log("UpdateMember Called")
+    //     } else {
+    //         dispatch(registerMember(data));
+    //         console.log("registerMember Called")
+    //     }
+    //     onClose();
+    // };
+
     const onSubmit: SubmitHandler<MemberFormInputs> = (data) => {
-        if (data._id) {
-            dispatch(updateMember(data));
-            
+        if (member && member._id) {
+            // This is an edit, call updateMember
+            dispatch(updateMember({ ...data, _id: member._id }));
         } else {
+            // This is a new member registration
             dispatch(registerMember(data));
         }
         onClose();
@@ -161,37 +182,26 @@ const MemberModel: React.FC<MemberPlanModalProps> = ({ isOpen, onClose, member }
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 ></textarea>
             </div>
-
-            {/* <div className="mb-5.5">
-            <label className="mb-2.5 block text-black dark:text-white">Select Plan</label>
-            <div className="relative z-20 bg-transparent dark:bg-form-input">
-                <select
-                    {...register('planId', { required: true })}
-                    defaultValue={member?.membership?.plan?._id || ''}
-                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary text-black dark:text-white"
-                >
-                    <option value="" disabled>Select a plan</option>
-                    {membershipPlans.map((plan) => (
-                        <option key={plan._id} value={plan._id}>
-                            {plan.name}
-                        </option>
-                    ))}
-                </select>
-                {errors.planId && <span className="text-red-500">Plan selection is required</span>}
-                <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
-                    <svg className="fill-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g opacity="0.8">
-                            <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                fill=""
-                            ></path>
-                        </g>
-                    </svg>
-                </span>
-            </div>
-            </div> */}
+            
+            {!member && (
+                <div className="mb-5.5">
+                    <label className="mb-2.5 block text-black dark:text-white">Select Plan</label>
+                    <div className="relative z-20 bg-transparent dark:bg-form-input">
+                        <select
+                            {...register('planId', { required: true })}
+                            className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary text-black dark:text-white"
+                        >
+                            <option value="" disabled>Select a plan</option>
+                            {membershipPlans.map((plan) => (
+                                <option key={plan._id} value={plan._id}>
+                                    {plan.name}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.planId && <span className="text-red-500">Plan selection is required</span>}
+                    </div>
+                </div>
+            )}
 
             <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
                 Submit
