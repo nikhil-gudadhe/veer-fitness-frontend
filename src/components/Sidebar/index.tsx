@@ -270,7 +270,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </clipPath>
                     </defs>
                   </svg>
-                  Membership Plan
+                  Plans
                 </NavLink>
               </li>
               {/* <!-- Menu Item Membership Plan --> */}

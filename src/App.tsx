@@ -29,7 +29,8 @@ import {
   Invoice,
   Dropdowns 
 } from './components/index.ts';
-import DataTable from './pages/ProElements/DataTable.tsx';
+//import DataTable from './pages/ProElements/DataTable.tsx';
+import DataTable from './components/DataTable.tsx';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -216,7 +217,7 @@ function App() {
         <DefaultLayout>
           <AuthLayout authentication={true}>
           <PageTitle title="DataTable | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-          <DataTable />
+          {/* <DataTable /> */}
           </AuthLayout>
         </DefaultLayout>
       } />
