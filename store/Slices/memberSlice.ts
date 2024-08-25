@@ -48,11 +48,6 @@ export const deleteMember = createAsyncThunk('members/deleteMember', async (id: 
     return id;
 });
 
-// export const fetchMemberById = createAsyncThunk('members/fetchMemberById',async (id: string) => {
-//     const response = await axiosInstance.get(`/members/${id}`);
-//     return response.data.data;
-// });
-
 export const fetchMemberById = createAsyncThunk('members/fetchMemberById', async (id: string, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.get(`/members/${id}`);

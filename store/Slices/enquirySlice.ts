@@ -7,19 +7,34 @@ interface EnquiryState {
   loading: boolean;
   error: string | null;
   success: string | null;
+  totalEnquiries: number;
+  totalPages: number;
+  currentPage: number;
 }
 
 const initialState: EnquiryState = {
   enquiries: [],
   loading: false,
   error: null,
-  success: null
+  success: null,
+  totalEnquiries: 0,
+  totalPages: 0,
+  currentPage: 1,
 };
 
-export const fetchEnquiries = createAsyncThunk('enquiries/fetchEnquiries', async () => {
-  const response = await axiosInstance.get('/enquiries/all-enquiries');
-  return response.data.data;
-});
+// Fetch enquiries with pagination
+export const fetchEnquiries = createAsyncThunk('enquiries/fetchEnquiries', async ({ page = 1, limit = 10 }: { page?: number; limit?: number; }, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get('/enquiries/all-enquiries', {
+        params: { page, limit },
+      });
+      return response.data;
+    } catch (error) {
+      //error.response.data.message
+      return thunkAPI.rejectWithValue(error || 'Failed to fetch enquiries');
+    }
+  }
+);
 
 export const createEnquiry = createAsyncThunk('enquiries/createEnquiry', async (newEnquiry: EnquiryFormInputs) => {
   const response = await axiosInstance.post('/enquiries/new', newEnquiry);
@@ -30,7 +45,6 @@ export const updateEnquiry = createAsyncThunk('enquiries/updateEnquiry', async (
   const response = await axiosInstance.patch(`/enquiries/edit/${updatedEnquiry._id}`, updatedEnquiry);
   return response.data.data;
 });
-
 
 const enquirySlice = createSlice({
   name: 'enquiries',
@@ -49,9 +63,12 @@ const enquirySlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchEnquiries.fulfilled, (state, action: PayloadAction<EnquiryFormInputs[]>) => {
+      .addCase(fetchEnquiries.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.enquiries = action.payload;
+        state.enquiries = action.payload.data.enquiries;
+        state.totalEnquiries = action.payload.data.totalEnquiries;
+        state.totalPages = action.payload.data.totalPages;
+        state.currentPage = action.payload.data.currentPage;
       })
       .addCase(fetchEnquiries.rejected, (state, action) => {
         state.loading = false;
