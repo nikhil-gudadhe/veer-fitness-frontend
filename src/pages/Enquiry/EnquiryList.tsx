@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEnquiries } from '../../../store/Slices/enquirySlice';
 import { EnquiryFormInputs } from '../../types/EnquiryFormInputs';
@@ -17,6 +17,7 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit }) => {
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     dispatch(fetchEnquiries({ page: currentPage, limit: rowsPerPage }));
