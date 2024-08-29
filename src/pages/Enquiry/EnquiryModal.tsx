@@ -39,6 +39,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
       preferredTimeSlot: '',
       note: ''
     });
+   
   }, [enquiry, reset]);
 
   const onSubmit: SubmitHandler<EnquiryFormInputs> = data => {
@@ -47,6 +48,18 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
     } else {
       dispatch(createEnquiry(data));
     }
+
+    reset({
+      fullName: '',
+      mobile: '',
+      previousGymExperience: '',
+      reference: '',
+      fitnessGoal: '',
+      target: '',
+      preferredTimeSlot: '',
+      note: ''
+    });
+    
     onClose();
   };
 
@@ -147,19 +160,6 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
             />
             {errors.target && <span className="text-red-500">Target is required</span>}
           </div>
-
-          {/* <div className="mb-4.5">
-            <label className="mb-2.5 block text-black dark:text-white">Preferred Timing Slot</label>
-            <select
-              {...register('preferredTimeSlot', { required: true })}
-              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            >
-              <option value="">Select an option</option>
-              <option value="Morning">Morning</option>
-              <option value="Evening">Evening</option>
-            </select>
-            {errors.preferredTimeSlot && <span className="text-red-500">Preferred Timing Slot is required</span>}
-          </div> */}
 
           <div className="mb-5.5">
             <label className="mb-2.5 block text-black dark:text-white">Preferred Timing Slot</label>

@@ -15,6 +15,7 @@ interface TableData {
 
 interface DataTableProps {
   searchTerm: string;
+  searchInputRef: React.RefObject<HTMLInputElement>;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   rowsPerPage: number;
   setRowsPerPage: (value: number) => void;
@@ -26,6 +27,7 @@ interface DataTableProps {
 
 const DataTable: React.FC<DataTableProps> = ({
   searchTerm,
+  searchInputRef,
   handleSearch,
   rowsPerPage,
   setRowsPerPage,
@@ -36,7 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({
 }) => {
   return (
     <section className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 py-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-6">
-      <div className="flex justify-between border-b border-stroke px-8 pb-4 dark:border-strokedark">
+      <div className="flex justify-between border-b border-stroke pb-6 dark:border-strokedark">
         <div className="w-100">
           <input
             type="text"
@@ -44,6 +46,7 @@ const DataTable: React.FC<DataTableProps> = ({
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearch}
+            ref={searchInputRef}
           />
         </div>
         <div className="flex items-center font-medium">
@@ -66,14 +69,14 @@ const DataTable: React.FC<DataTableProps> = ({
           className="datatable-table w-full table-auto border-collapse overflow-hidden break-words px-4 md:table-fixed md:overflow-auto md:px-8"
         >
           <thead>
-            <tr role="row" className="font-medium">
+            <tr role="row" className="bg-gray-2 dark:bg-meta-4">
               {tableData.columns.map((column, index) => (
                 <th
                   key={index}
                   colSpan={1}
                   role="columnheader"
                   style={{ cursor: 'pointer' }}
-                  className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
+                  className="py-4 px-4 font-medium text-black dark:text-white xl:pl-11"
                 >
                   <div className="flex items-center">
                     <span>{column.header}</span>
