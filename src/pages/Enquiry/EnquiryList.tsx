@@ -17,11 +17,10 @@ interface EnquiryListProps {
 
 const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit, currentPage, rowsPerPage, setCurrentPage, setRowsPerPage }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { enquiries, loading, totalPages } = useSelector((state: RootState) => state.enquiries);
+  const { enquiries, loading, totalEnquiries, totalPages } = useSelector((state: RootState) => state.enquiries);
 
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  //const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +43,7 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit, currentPage, rowsPerP
     }
 
     debounceTimeout.current = setTimeout(() => {
-      if (searchTerm) {
+      if (searchTerm.trim()) {
         dispatch(searchEnquiries({ searchTerm, page: 1, limit: rowsPerPage }));
       } else {
         dispatch(fetchEnquiries({ page: 1, limit: rowsPerPage }));
@@ -70,13 +69,18 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit, currentPage, rowsPerP
 
   const handleEditEnquiry = (enquiry: EnquiryFormInputs) => {
     onEdit(enquiry);
-    closeDropdown(); // Close the dropdown after editing
+    closeDropdown();
   };
-  
+
   const handleDeleteEnquiry = (enquiryId: string) => {
     dispatch(deleteEnquiry(enquiryId)).then((result) => {
       if (result.meta.requestStatus === 'fulfilled') {
-        closeDropdown();
+        const remainingRecords = enquiries.length - 1;
+        const totalRemainingPages = Math.ceil((totalEnquiries - 1) / rowsPerPage);
+        
+        if (remainingRecords < rowsPerPage && currentPage <= totalRemainingPages) {
+          dispatch(fetchEnquiries({ page: currentPage, limit: rowsPerPage }));
+        }
       } else {
         console.log('Failed to delete enquiry:', result);
       }

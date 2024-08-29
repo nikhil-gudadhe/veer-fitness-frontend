@@ -150,6 +150,7 @@ const enquirySlice = createSlice({
       })
       .addCase(deleteEnquiry.fulfilled, (state, action) => {
         state.enquiries = state.enquiries.filter((enquiry) => enquiry._id !== action.payload.id);
+        state.totalEnquiries -= 1;
         state.success = action.payload.message;
       })
       .addCase(deleteEnquiry.rejected, (state, action) => {
