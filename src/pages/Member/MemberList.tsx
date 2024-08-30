@@ -1,9 +1,11 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMembers } from '../../../store/Slices/memberSlice';
-import { MemberFormInputs } from '../../types/MemberFormInputs.ts';
-import { RootState, AppDispatch } from '../../../store/store.ts';
-import Spinner from '../../components/Spinner.tsx';
+import { MemberFormInputs } from '../../types/MemberFormInputs';
+import { RootState, AppDispatch } from '../../../store/store';
+import Spinner from '../../components/Spinner';
+import DataTable from '../../components/DataTable';
+
 import { useNavigate } from 'react-router-dom';
 
 interface MemberListProps {
@@ -140,4 +142,3 @@ const MemberList: React.FC<MemberListProps> = ({ onEdit }) => {
 
 
 export default MemberList;
-
