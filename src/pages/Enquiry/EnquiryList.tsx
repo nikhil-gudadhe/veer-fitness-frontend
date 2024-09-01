@@ -45,8 +45,6 @@ const EnquiryList: React.FC<EnquiryListProps> = ({ onEdit, currentPage, rowsPerP
     debounceTimeout.current = setTimeout(() => {
       if (searchTerm.trim()) {
         dispatch(searchEnquiries({ searchTerm, page: 1, limit: rowsPerPage }));
-      } else {
-        dispatch(fetchEnquiries({ page: 1, limit: rowsPerPage }));
       }
     }, 1000);
 

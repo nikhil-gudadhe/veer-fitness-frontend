@@ -8,6 +8,10 @@ interface MemberState {
     loading: boolean;
     error: string | null;
     success: string | null;
+    totalMembers: number;
+    rowsPerPage: number;
+    totalPages: number;
+    currentPage: number;
 }
 
 const initialState: MemberState = {
@@ -16,12 +20,37 @@ const initialState: MemberState = {
     loading: false,
     error: null,
     success: null,
+    totalMembers: 0,
+    rowsPerPage: 5,
+    totalPages: 0,
+    currentPage: 1,
 };
 
-export const fetchMembers = createAsyncThunk('members/fetchMembers', async () => {
-    const response = await axiosInstance.get('/members/all-members');
-    return response.data.data;
-});
+export const fetchMembers = createAsyncThunk('members/fetchMembers', 
+    async ({ page = 1, limit = 10 }: { page?: number; limit?: number; }, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get('/members/all-members', {
+        params: { page, limit },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error || 'Failed to fetch members');
+    }
+  }
+);
+
+export const searchMembers = createAsyncThunk('members/searchMembers',
+    async ({ searchTerm, page = 1, limit = 10 }: { searchTerm: string; page?: number; limit?: number }, thunkAPI) => {
+      try {
+        const response = await axiosInstance.get('/members/search', {
+          params: { searchTerm, page, limit },
+        });
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error || 'Failed to search members');
+      }
+    }
+);
 
 export const fetchActiveMembers = createAsyncThunk('members/fetchActiveMembers', async () => {
     const response = await axiosInstance.get('/members/active-members');
@@ -53,7 +82,6 @@ export const fetchMemberById = createAsyncThunk('members/fetchMemberById', async
         const response = await axiosInstance.get(`/members/${id}`);
         return response.data.data;
     } catch (error) {
-        //error.response?.data?.message
         return rejectWithValue(error || 'Failed to fetch member');
     }
 });
@@ -80,18 +108,35 @@ const memberSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        
             .addCase(fetchMembers.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchMembers.fulfilled, (state, action: PayloadAction<MemberFormInputs[]>) => {
+            .addCase(fetchMembers.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false;
-                state.members = action.payload;
+                state.members = action.payload.data.members.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());;
+                state.totalMembers = action.payload.data.totalMembers;
+                state.totalPages = action.payload.data.totalPages;
+                state.currentPage = action.payload.data.currentPage;
             })
             .addCase(fetchMembers.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Failed to fetch members';
+            })
+            .addCase(searchMembers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(searchMembers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.members = action.payload.data.members;
+                state.totalMembers = action.payload.data.totalMembers;
+                state.totalPages = action.payload.data.totalPages;
+                state.currentPage = action.payload.data.currentPage;
+            })
+            .addCase(searchMembers.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Failed to search members';
             })
             .addCase(registerMember.pending, (state) => {
                 state.loading = true;

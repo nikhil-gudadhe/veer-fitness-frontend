@@ -15,7 +15,7 @@ import Buttons from '../pages/UiElements/Buttons.tsx';
 import DefaultLayout from '../layout/DefaultLayout';
 import AuthLayout from '../components/AuthLayout';
 import Enquiry from '../pages/Enquiry/Enquiry.tsx';
-import Invoice from '../pages/ProElements/Invoice.tsx';
+import Invoice from '../components/Invoice.tsx';
 import Dropdowns from '../pages/ProElements/Dropdowns.tsx';
 import MembershipPlan from '../pages/MembershipPlan/MembershipPlan.tsx';
 import Member from '../pages/Member/Member.tsx';
