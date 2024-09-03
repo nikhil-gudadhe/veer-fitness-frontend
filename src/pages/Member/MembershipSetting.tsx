@@ -6,6 +6,8 @@ import { fetchMembershipPlans } from '../../../store/Slices/membershipPlanSlice'
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import InvoicePDF from '../../components/Invoice';
 
 interface MembershipSettingFormInputs {
   planId: string;
@@ -300,6 +302,12 @@ const MembershipSetting: React.FC = () => {
               )}
             </div>
           </div>
+
+          {currentMember?.membership?.extensions && currentMember?.membership?.extensions?.length > 0 && (
+            <PDFDownloadLink document={<InvoicePDF />} fileName="invoice.pdf">
+              {({ loading }) => (loading ? 'Loading document...' : 'Download Invoice')}
+            </PDFDownloadLink>
+          )}
 
         </div>
       </div>
