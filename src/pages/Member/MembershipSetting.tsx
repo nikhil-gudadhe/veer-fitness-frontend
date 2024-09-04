@@ -302,12 +302,12 @@ const MembershipSetting: React.FC = () => {
               )}
             </div>
           </div>
-
-          {currentMember?.membership?.extensions && currentMember?.membership?.extensions?.length > 0 && (
+           {/* pass data to invoice component      */}
+          {/* {currentMember?.membership?.extensions && currentMember?.membership?.extensions?.length > 0 && (
             <PDFDownloadLink document={<InvoicePDF />} fileName="invoice.pdf">
               {({ loading }) => (loading ? 'Loading document...' : 'Download Invoice')}
             </PDFDownloadLink>
-          )}
+          )} */}
 
         </div>
       </div>
