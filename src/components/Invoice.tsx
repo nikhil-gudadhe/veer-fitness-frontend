@@ -1,4 +1,6 @@
 import React from 'react';
+import { Page, Text, View, Document, PDFDownloadLink, StyleSheet } from '@react-pdf/renderer';
+
 
 interface Extension {
   previousEndDate: Date;
@@ -17,11 +19,12 @@ interface InvoiceProps {
   planDuration: number;
 }
 
-const Invoice: React.FC<InvoiceProps> = ({ memberExtensions, memberName, memberMobile, memberEmail, planName, planDescription, planPrice, planDuration  }) => {
-console.log(memberExtensions)
+//{ memberExtensions, memberName, memberMobile, memberEmail, planName, planDescription, planPrice, planDuration  }
+const Invoice: React.FC<InvoiceProps> = ({member}) => {
+
   return (
-  <>
-    <div className="flex flex-col gap-10 pt-8">
+    <>
+    {/* <div className="flex flex-col gap-10 pt-8">
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke px-4 py-4 dark:border-strokedark sm:px-6 xl:px-9">
             <h3 className="font-medium text-black dark:text-white">Invoice</h3>
@@ -99,17 +102,17 @@ console.log(memberExtensions)
                         </div>
                         <div className="grid grid-cols-12 border-b border-stroke py-3.5 pl-5 pr-6 dark:border-strokedark">
                             <div className="col-span-3">
-                            <p className="font-medium">Silver</p>
+                            <p className="font-medium">{planName}</p>
                             </div>
                             <div className="col-span-4">
-                            <p className="font-medium">3 Months plan for beginners</p>
+                            <p className="font-medium">{planDescription}</p>
                             </div>
                             <div className="col-span-2">
-                            <p className="font-medium">1</p>
+                            <p className="font-medium">{planDuration}</p>
                             </div>
 
                             <div className="col-span-1">
-                            <p className="text-right font-medium">$200</p>
+                            <p className="text-right font-medium">{planPrice}</p>
                             </div>
                         </div>
                     </div>
@@ -137,7 +140,7 @@ console.log(memberExtensions)
             </div>
         </div>
     </div>
-    </div>
+    </div> */}
     </>
 );
 }

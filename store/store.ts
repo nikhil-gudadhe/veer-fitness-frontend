@@ -3,13 +3,15 @@ import authSliceReducer from './Slices/authSlice';
 import enquirySliceReducer from './Slices/enquirySlice';
 import membershipPlanSliceReducer from './Slices/membershipPlanSlice'
 import memberSliceReducer from './Slices/memberSlice'
+import invoiceSliceReducer from './Slices/invoiceSlice'
 
 const store = configureStore({
   reducer: {
     auth: authSliceReducer,
     enquiries: enquirySliceReducer,
     plans: membershipPlanSliceReducer,
-    members: memberSliceReducer
+    members: memberSliceReducer,
+    invoice: invoiceSliceReducer
   },
 });
 

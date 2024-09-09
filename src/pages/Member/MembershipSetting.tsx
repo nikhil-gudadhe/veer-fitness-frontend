@@ -309,26 +309,8 @@ const MembershipSetting: React.FC = () => {
               {({ loading }) => (loading ? 'Loading document...' : 'Download Invoice')}
             </PDFDownloadLink>
           )} */}
-
-
         </div>
 
-          {/* {currentMember?.membership?.extensions && currentMember?.membership?.extensions.length > 0 && (
-            <Invoice memberExtensions={currentMember.membership.extensions} />
-          )} */}
-
-        {currentMember?.membership?.extensions && currentMember.membership.extensions.length > 0 && (
-          <Invoice
-          memberExtensions={currentMember?.membership?.extensions || []}
-          memberName={`${currentMember?.firstName} ${currentMember?.lastName}`}
-          memberMobile={currentMember?.mobile || 'Not available'}
-          memberEmail={currentMember?.email || 'Not available'}
-          planName={currentMember?.membership?.plan?.name || 'No plan selected'}
-          planDescription={currentMember?.membership?.plan?.description || 'No description available'}
-          planPrice={currentMember?.membership?.plan?.price || 0}  // Assign default value
-          planDuration={currentMember?.membership?.plan?.duration || 1}  // Assign default value
-        />
-        )}
       </div>
     </>
   );

@@ -196,7 +196,6 @@ const memberSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || 'Failed to extend membership';
             })
-            // Handle fetching a single member by ID
             .addCase(fetchMemberById.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -210,29 +209,6 @@ const memberSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || 'Failed to fetch member';
             })
-            // .addCase(fetchMemberById.pending, (state) => {
-            //     state.loading = true;
-            //     state.error = null;
-            // })
-            // .addCase(fetchMemberById.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
-            //     state.loading = false;
-            //     state.currentMember = action.payload; // Updated from selectedMember
-            //     state.success = 'Member fetched successfully';
-            // })
-            // .addCase(fetchMemberById.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
-            //     state.loading = false;
-            //     const memberIndex = state.members.findIndex(member => member._id === action.payload._id);
-            //     if (memberIndex !== -1) {
-            //       state.members[memberIndex] = action.payload;
-            //     } else {
-            //       state.members.push(action.payload);
-            //     }
-            //     state.success = 'Member fetched successfully';
-            // })
-            // .addCase(fetchMemberById.rejected, (state, action) => {
-            //     state.loading = false;
-            //     state.error = action.error.message || 'Failed to fetch member';
-            // });
     },
 });
 
