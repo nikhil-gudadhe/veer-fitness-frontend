@@ -11,7 +11,7 @@ const store = configureStore({
     enquiries: enquirySliceReducer,
     plans: membershipPlanSliceReducer,
     members: memberSliceReducer,
-    invoice: invoiceSliceReducer
+    invoices: invoiceSliceReducer
   },
 });
 

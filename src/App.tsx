@@ -26,11 +26,12 @@ import {
   Member,
   MembershipPlan,
   MembershipSetting,
-  Invoice,
-  Dropdowns 
+  Dropdowns,
+  Invoice 
 } from './components/index.ts';
 //import DataTable from './pages/ProElements/DataTable.tsx';
 import DataTable from './components/DataTable.tsx';
+// import Invoice from './pages/ProElements/Invoice.tsx';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -199,7 +200,7 @@ function App() {
         <DefaultLayout>
           <AuthLayout authentication={true}>
           <PageTitle title="Invoice | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-          <Invoice />
+          {/* <Invoice /> */}
           </AuthLayout>
         </DefaultLayout>
       } />
