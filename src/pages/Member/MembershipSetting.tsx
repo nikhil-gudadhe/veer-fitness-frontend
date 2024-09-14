@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../store/store';
 import { fetchMemberById, extendMembership } from '../../../store/Slices/memberSlice';
 import { fetchMembershipPlans } from '../../../store/Slices/membershipPlanSlice';
-import { fetchInvoiceById } from '../../../store/Slices/invoiceSlice';  //new change
+import { fetchInvoiceByMemberId } from '../../../store/Slices/invoiceSlice';  //new change
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
@@ -32,28 +32,11 @@ const MembershipSetting: React.FC = () => {
 
   useEffect(() => {
     if (memberId) {
-      dispatch(fetchInvoiceById(memberId));
+      dispatch(fetchInvoiceByMemberId(memberId));
     }
   }, [dispatch, memberId]);
 
-  // Prepare the data for the invoice from currentInvoice state
-  const invoiceData = {
-    billingTo: {
-      name: currentMember?.firstName + ' ' + currentMember?.lastName,
-      email: currentMember?.email,
-      mobile: currentMember?.mobile,
-    },
-    invoiceId: currentInvoice.invoiceId,
-    pastExpiryDate: currentInvoice.pastExpiryDate,
-    newExpiryDate: currentInvoice.newExpiryDate,
-    extendedOn: currentInvoice.extendedOn,
-    planName: currentInvoice.plan.name,
-    planDescription: currentInvoice.plan.description,
-    planDuration: `${currentInvoice.plan.duration} Month${currentInvoice.plan.duration > 1 ? 's' : ''}`,
-    amount: currentInvoice.amount,
-    totalAmount: currentInvoice.totalAmount,
-  };
-
+ 
   useEffect(() => {
     dispatch(fetchMembershipPlans());
     if (memberId) {
@@ -316,8 +299,10 @@ const MembershipSetting: React.FC = () => {
                   </div>
                   <div className="text-right sm:w-3/12 xl:w-2/12">
                   {/* <button className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6">Download</button> */}
+                  {/* {invoiceData} */}
                   <PDFDownloadLink
-                    document={<Invoice invoiceData={invoiceData} />}
+
+                    document={<Invoice invoiceData={} />}
                     fileName={`invoice_${currentInvoice.invoiceId}.pdf`}
                   >
                     {({ loading }) => (loading ? '...' : 'Download')}

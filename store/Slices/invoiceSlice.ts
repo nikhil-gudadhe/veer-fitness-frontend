@@ -31,6 +31,18 @@ export const fetchInvoiceById = createAsyncThunk('invoice/fetchInvoiceById', asy
     }
 });
 
+export const fetchInvoiceByMemberId = createAsyncThunk(
+    'invoice/fetchInvoiceByMemberId',
+    async (memberId: string, thunkAPI) => {
+      try {
+        const response = await axiosInstance.get(`/invoices/fetch-invoices/${memberId}`);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error || 'Failed to fetch invoice');
+      }
+    }
+  );
+
 const invoiceSlice = createSlice({
     name: 'invoice',
     initialState,
@@ -66,6 +78,18 @@ const invoiceSlice = createSlice({
             .addCase(fetchInvoiceById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(fetchInvoiceByMemberId.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(fetchInvoiceByMemberId.fulfilled, (state, action) => {
+              state.loading = false;
+              state.currentInvoice = action.payload;
+            })
+            .addCase(fetchInvoiceByMemberId.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload as string;
             });
     },
 });
