@@ -56,10 +56,14 @@ const MembershipSetting: React.FC = () => {
         duration: selectedDuration || 1,
       });
     }
+
+    
   }, [currentMember, reset]);
 
   const selectedPlanId = watch('planId');
   const selectedDuration = watch('duration');
+
+
 
   const onSubmit: SubmitHandler<MembershipSettingFormInputs> = (data) => {
     const requestData: any = {
@@ -71,8 +75,6 @@ const MembershipSetting: React.FC = () => {
         requestData.newPlanId = data.planId; // Pass newPlanId only if it has been changed
     }
 
-    console.log("requestData: ", requestData)
-
     dispatch(extendMembership(requestData))
         .then(() => {
             console.log("Membership extended/updated successfully");
@@ -82,6 +84,26 @@ const MembershipSetting: React.FC = () => {
             console.error("Error extending/updating membership:", error);
         });
   };
+
+   // Prepare invoiceData for PDF rendering
+   const invoiceData = {
+    billingTo: {
+      name: currentMember?.firstName + ' ' + currentMember?.lastName,
+      email: currentMember?.email,
+      mobile: currentMember?.mobile,
+    },
+    invoiceId: currentInvoice?.invoiceId,
+    pastExpiryDate: currentInvoice?.previousEndDate ? new Date(currentInvoice.previousEndDate).toLocaleDateString() : 'N/A',
+    newExpiryDate: currentInvoice?.endDate ? new Date(currentInvoice.endDate).toLocaleDateString() : 'N/A',
+    extendedOn: currentInvoice?.createdAt ? new Date(currentInvoice.createdAt).toLocaleDateString() : 'N/A',
+    planName: currentInvoice?.planName,
+    planDescription: currentInvoice?.planDescription,
+    planDuration: `${currentInvoice?.planDuration} Month${currentInvoice?.planDuration > 1 ? 's' : ''}`,
+    amount: currentInvoice?.planPrice,
+    totalAmount: currentInvoice?.planPrice,
+  };
+
+  console.log(invoiceData)
 
   return (
     <>
@@ -299,10 +321,9 @@ const MembershipSetting: React.FC = () => {
                   </div>
                   <div className="text-right sm:w-3/12 xl:w-2/12">
                   {/* <button className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6">Download</button> */}
-                  {/* {invoiceData} */}
+                  
                   <PDFDownloadLink
-
-                    document={<Invoice invoiceData={} />}
+                    document={<Invoice invoiceData={invoiceData} />}
                     fileName={`invoice_${currentInvoice.invoiceId}.pdf`}
                   >
                     {({ loading }) => (loading ? '...' : 'Download')}

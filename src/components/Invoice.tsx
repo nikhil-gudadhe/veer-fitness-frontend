@@ -1,154 +1,113 @@
-import React, { useEffect } from 'react';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { RootState } from '../../store/store';
+import React from 'react';
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 
-const Invoice: React.FC<{ invoiceData: any  }> = ({ invoiceData  }) => {
+// Create styles for the PDF document
+const styles = StyleSheet.create({
+  page: {
+    backgroundColor: '#FFFFFF', // White background
+    padding: 20,
+  },
+  section: {
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 14,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 10, // Reduced font size
+    marginBottom: 4,
+  },
+  heading: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    padding: 4,
+  },
+  tableCellHeader: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    width: '25%',
+    padding: 4,
+  },
+  tableCell: {
+    fontSize: 10,
+    width: '25%',
+    padding: 4,
+  },
+  totalAmount: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: 'right',
+  },
+});
 
-    // Custom fonts or any specific design changes
-    Font.register({
-        family: 'Helvetica',
-        fonts: [
-        { src: 'https://path-to-your-custom-font.ttf' },
-        ]
-    });
-  
-    const styles = StyleSheet.create({
-        page: {
-          padding: 20,
-          fontFamily: 'Helvetica',
-          color: '#fff',
-          backgroundColor: '#192A38',
-        },
-        section: {
-          marginBottom: 20,
-        },
-        header: {
-          fontSize: 16,
-          marginBottom: 10,
-          textAlign: 'left',
-          color: '#fff',
-        },
-        invoiceTitle: {
-          fontSize: 18,
-          fontWeight: 'bold',
-          marginBottom: 10,
-        },
-        twoColumns: {
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginBottom: 20,
-        },
-        column: {
-          width: '48%',
-        },
-        invoiceDetails: {
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          borderTopWidth: 1,
-          borderBottomWidth: 1,
-          borderColor: '#444',
-          paddingVertical: 5,
-          marginBottom: 10,
-        },
-        tableHeader: {
-          fontSize: 12,
-          fontWeight: 'bold',
-          marginBottom: 4,
-        },
-        tableRow: {
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginVertical: 4,
-        },
-        totalSection: {
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          borderTopWidth: 1,
-          borderColor: '#444',
-          paddingVertical: 5,
-          marginTop: 10,
-        },
-        bold: {
-          fontWeight: 'bold',
-        },
-        greenText: {
-          color: '#00FF00',
-        },
-      });
-
-    return (
-        <Document>
+// Define the PDF structure for the invoice
+const Invoice: React.FC<{ invoiceData: any }> = ({ invoiceData }) => {
+  return (
+    <Document>
       <Page style={styles.page}>
+        {/* Title */}
         <View style={styles.section}>
-          <Text style={styles.invoiceTitle}>Invoice</Text>
+          <Text style={styles.title}>Invoice</Text>
         </View>
 
         {/* Billing From and To */}
-        <View style={styles.twoColumns}>
-          <View style={styles.column}>
-            <Text style={styles.header}>Billing From:</Text>
-            <Text>Veer Fitness</Text>
-            <Text>Email: contact@veerfitnessbhopal.com</Text>
-            <Text>Address: G-2/115 Arihant Complex, Road, Gulmohar Colony, Bhopal</Text>
+        <View style={[styles.section, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+          <View>
+            <Text style={styles.heading}>Billing From:</Text>
+            <Text style={styles.text}>Veer Fitness</Text>
+            <Text style={styles.text}>Email: contact@veerfitnessbhopal.com</Text>
+            <Text style={styles.text}>Address: G-2/115 Arihant Complex, Road, Gulmohar Colony, Bhopal</Text>
           </View>
-          <View style={styles.column}>
-            <Text style={styles.header}>Billing To:</Text>
-            <Text>{invoiceData.billingTo.name}</Text>
-            <Text>Email: {invoiceData.billingTo.email}</Text>
-            <Text>Mobile: {invoiceData.billingTo.mobile}</Text>
+          <View>
+            <Text style={styles.heading}>Billing To:</Text>
+            <Text style={styles.text}>{invoiceData.billingTo.name}</Text>
+            <Text style={styles.text}>Email: {invoiceData.billingTo.email}</Text>
+            <Text style={styles.text}>Mobile: {invoiceData.billingTo.mobile}</Text>
           </View>
         </View>
 
-        {/* Invoice details */}
-        <View style={styles.invoiceDetails}>
-          <View>
-            <Text style={styles.bold}>Invoice ID: </Text>
-            <Text>#{invoiceData.invoiceId}</Text>
-          </View>
-          <View>
-            <Text style={styles.bold}>Past Expiry Date:</Text>
-            <Text>{invoiceData.pastExpiryDate}</Text>
-          </View>
-          <View>
-            <Text style={styles.bold}>New Expiry Date:</Text>
-            <Text>{invoiceData.newExpiryDate}</Text>
-          </View>
-          <View>
-            <Text style={styles.bold}>Extended On:</Text>
-            <Text>{invoiceData.extendedOn}</Text>
-          </View>
+        {/* Invoice Details */}
+        <View style={styles.section}>
+          <Text style={styles.text}>Invoice ID: {invoiceData.invoiceId}</Text>
+          <Text style={styles.text}>Past Expiry Date: {invoiceData.pastExpiryDate}</Text>
+          <Text style={styles.text}>New Expiry Date: {invoiceData.newExpiryDate}</Text>
+          <Text style={styles.text}>Extended On: {invoiceData.extendedOn}</Text>
         </View>
 
-        {/* Membership Table */}
-        <View>
+        {/* Plan Information */}
+        <View style={styles.section}>
+          <Text style={styles.heading}>Membership Plan</Text>
+          {/* Flexbox Table */}
           <View style={styles.tableRow}>
-            <Text style={styles.tableHeader}>Membership Plan</Text>
-            <Text style={styles.tableHeader}>Description</Text>
-            <Text style={styles.tableHeader}>Duration</Text>
-            <Text style={styles.tableHeader}>Amount</Text>
+            <Text style={styles.tableCellHeader}>Plan Name</Text>
+            <Text style={styles.tableCellHeader}>Description</Text>
+            <Text style={styles.tableCellHeader}>Duration</Text>
+            <Text style={[styles.tableCellHeader, { textAlign: 'right' }]}>Amount</Text>
           </View>
-
           <View style={styles.tableRow}>
-            <Text>{invoiceData.planName}</Text>
-            <Text>{invoiceData.planDescription}</Text>
-            <Text>{invoiceData.planDuration}</Text>
-            <Text>{invoiceData.amount}</Text>
+            <Text style={styles.tableCell}>{invoiceData.planName}</Text>
+            <Text style={styles.tableCell}>{invoiceData.planDescription}</Text>
+            <Text style={styles.tableCell}>{invoiceData.planDuration}</Text>
+            <Text style={[styles.tableCell, { textAlign: 'right' }]}>{invoiceData.amount}</Text>
           </View>
         </View>
 
-        {/* Total Amount Section */}
-        <View style={styles.totalSection}>
-          <Text style={styles.bold}>Total Amount</Text>
-          <Text style={[styles.bold, styles.greenText]}>₹{invoiceData.totalAmount}</Text>
+        {/* Total Amount */}
+        <View style={styles.section}>
+          <Text style={styles.totalAmount}>Total Amount: {invoiceData.totalAmount}</Text>
         </View>
       </Page>
     </Document>
-    );
-}
+  );
+};
 
 export default Invoice;
