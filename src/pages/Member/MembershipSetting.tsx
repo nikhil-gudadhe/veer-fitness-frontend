@@ -103,7 +103,6 @@ const MembershipSetting: React.FC = () => {
     totalAmount: currentInvoice?.planPrice,
   };
 
-  console.log(invoiceData)
 
   return (
     <>
@@ -323,8 +322,9 @@ const MembershipSetting: React.FC = () => {
                   {/* <button className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6">Download</button> */}
                   
                   <PDFDownloadLink
+                  className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6"
                     document={<Invoice invoiceData={invoiceData} />}
-                    fileName={`invoice_${currentInvoice.invoiceId}.pdf`}
+                    fileName={`invoice_${currentInvoice?.invoiceId}.pdf`}
                   >
                     {({ loading }) => (loading ? '...' : 'Download')}
                   </PDFDownloadLink>
