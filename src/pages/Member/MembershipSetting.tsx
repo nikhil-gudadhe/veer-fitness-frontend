@@ -30,6 +30,7 @@ const MembershipSetting: React.FC = () => {
     },
   });
 
+
   useEffect(() => {
     if (memberId) {
       dispatch(fetchInvoiceByMemberId(memberId));
@@ -64,7 +65,6 @@ const MembershipSetting: React.FC = () => {
   const selectedDuration = watch('duration');
 
 
-
   const onSubmit: SubmitHandler<MembershipSettingFormInputs> = (data) => {
     const requestData: any = {
         memberId: currentMember?._id,
@@ -78,7 +78,10 @@ const MembershipSetting: React.FC = () => {
     dispatch(extendMembership(requestData))
         .then(() => {
             console.log("Membership extended/updated successfully");
-            //navigate('/members');
+            if(memberId) {
+            dispatch(fetchInvoiceByMemberId(memberId));
+            
+            }
         })
         .catch((error) => {
             console.error("Error extending/updating membership:", error);
@@ -319,15 +322,18 @@ const MembershipSetting: React.FC = () => {
                       <p className="font-medium text-black dark:text-white">Extended On {new Date(extension.extendedAt).toLocaleDateString()}</p>
                   </div>
                   <div className="text-right sm:w-3/12 xl:w-2/12">
-                  {/* <button className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6">Download</button> */}
-                  
-                  <PDFDownloadLink
-                  className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6"
+
+                  {currentInvoice?.invoiceId ? (
+                    <PDFDownloadLink
+                    className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6"
                     document={<Invoice invoiceData={invoiceData} />}
-                    fileName={`invoice_${currentInvoice?.invoiceId}.pdf`}
+                    fileName={`invoice_${currentInvoice?.invoiceId || 'invoice'}.pdf`}
                   >
-                    {({ loading }) => (loading ? '...' : 'Download')}
+                    {({ loading }) => (loading ? 'Generating...' : 'Download Invoice')}
                   </PDFDownloadLink>
+                  ) : (
+                    <p>Invoice not available yet</p>
+                  )}
                   </div>
                 </div>
                 
