@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../store/store';
 import { fetchMemberById, extendMembership } from '../../../store/Slices/memberSlice';
 import { fetchMembershipPlans } from '../../../store/Slices/membershipPlanSlice';
-import { fetchInvoiceByMemberId } from '../../../store/Slices/invoiceSlice';  //new change
+import { fetchInvoiceByMemberId, createInvoice } from '../../../store/Slices/invoiceSlice';  //new change
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { Invoice } from '../../components';
+
 
 interface MembershipSettingFormInputs {
   planId: string;
@@ -23,6 +26,7 @@ const MembershipSetting: React.FC = () => {
   const { membershipPlans } = useSelector((state: RootState) => state.plans);
   const { currentInvoice } = useSelector((state: RootState) => state.invoices);
 
+
   const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<MembershipSettingFormInputs>({
     defaultValues: {
       planId: '',
@@ -34,6 +38,7 @@ const MembershipSetting: React.FC = () => {
   useEffect(() => {
     if (memberId) {
       dispatch(fetchInvoiceByMemberId(memberId));
+      console.log("Member Id: ", memberId)
     }
   }, [dispatch, memberId]);
 
@@ -77,11 +82,20 @@ const MembershipSetting: React.FC = () => {
 
     dispatch(extendMembership(requestData))
         .then(() => {
-            console.log("Membership extended/updated successfully");
-            if(memberId) {
-            dispatch(fetchInvoiceByMemberId(memberId));
-            
-            }
+            toast.success("Membership extended successfully");
+            // After extending membership, generate the invoice
+            dispatch(createInvoice({ memberId: currentMember?._id }))
+            .then((invoiceResponse) => {
+              console.log("Invoice generated successfully:", invoiceResponse);
+            })
+            .catch((error) => {
+              toast.error("Error extending/updating membership");
+              console.error("Error generating invoice:", error);
+            });
+
+            // if(memberId) {
+            // dispatch(fetchInvoiceByMemberId(memberId));
+            // }
         })
         .catch((error) => {
             console.error("Error extending/updating membership:", error);
@@ -316,7 +330,7 @@ const MembershipSetting: React.FC = () => {
                       <p className="font-medium text-black dark:text-white">New Expiry Date {new Date(extension.newEndDate).toLocaleDateString()}</p>
                   </div>
                   <div className="hidden w-5/12 xl:block">
-                      <p className="font-medium text-black dark:text-white">Duration {extension.duration === 1 ? extension.duration + " Month" : " Months(s)"}</p>
+                      <p className="font-medium text-black dark:text-white">Duration {extension.duration === 1 ? `${extension.duration} Month` : `${extension.duration} Months`}</p>
                   </div>
                   <div className="hidden w-5/12 xl:block">
                       <p className="font-medium text-black dark:text-white">Extended On {new Date(extension.extendedAt).toLocaleDateString()}</p>
@@ -329,7 +343,7 @@ const MembershipSetting: React.FC = () => {
                     document={<Invoice invoiceData={invoiceData} />}
                     fileName={`invoice_${currentInvoice?.invoiceId || 'invoice'}.pdf`}
                   >
-                    {({ loading }) => (loading ? 'Generating...' : 'Download Invoice')}
+                    {({ loading }) => (loading ? 'Generating...' : 'Download')}
                   </PDFDownloadLink>
                   ) : (
                     <p>Invoice not available yet</p>
