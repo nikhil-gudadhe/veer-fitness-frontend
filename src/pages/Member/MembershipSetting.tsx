@@ -19,13 +19,13 @@ interface MembershipSettingFormInputs {
 }
 
 const MembershipSetting: React.FC = () => {
+  
   const { memberId } = useParams<{ memberId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { currentMember, loading, error } = useSelector((state: RootState) => state.members);
   const { membershipPlans } = useSelector((state: RootState) => state.plans);
-  const { currentInvoice } = useSelector((state: RootState) => state.invoices);
-
+  const { invoices } = useSelector((state: RootState) => state.invoices);
 
   const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<MembershipSettingFormInputs>({
     defaultValues: {
@@ -34,15 +34,13 @@ const MembershipSetting: React.FC = () => {
     },
   });
 
-
+  // Fetch invoices when memberId changes
   useEffect(() => {
     if (memberId) {
       dispatch(fetchInvoiceByMemberId(memberId));
-      console.log("Member Id: ", memberId)
     }
   }, [dispatch, memberId]);
 
- 
   useEffect(() => {
     dispatch(fetchMembershipPlans());
     if (memberId) {
@@ -52,7 +50,6 @@ const MembershipSetting: React.FC = () => {
 
   useEffect(() => {
     if (currentMember) {
-      // Get the latest extension if available
       const latestExtension = currentMember.membership?.extensions?.slice(-1)[0];
       const selectedPlanId = currentMember.membership?.plan._id;
       const selectedDuration = latestExtension ? latestExtension.duration : currentMember.membership?.plan.duration;
@@ -62,64 +59,69 @@ const MembershipSetting: React.FC = () => {
         duration: selectedDuration || 1,
       });
     }
-
-    
   }, [currentMember, reset]);
 
   const selectedPlanId = watch('planId');
   const selectedDuration = watch('duration');
 
+  // Handle the invoice data for the PDF rendering
+  const latestInvoice = invoices.length > 0 ? invoices[invoices.length - 1] : null;
 
-  const onSubmit: SubmitHandler<MembershipSettingFormInputs> = (data) => {
-    const requestData: any = {
+  const invoiceData = latestInvoice
+    ? {
+        billingTo: {
+          name: currentMember?.firstName + ' ' + currentMember?.lastName,
+          email: currentMember?.email,
+          mobile: currentMember?.mobile,
+        },
+        invoiceId: latestInvoice.invoiceId || 'N/A',
+        pastExpiryDate: latestInvoice.previousEndDate
+          ? new Date(latestInvoice.previousEndDate).toLocaleDateString()
+          : 'N/A',
+        newExpiryDate: latestInvoice.endDate
+          ? new Date(latestInvoice.endDate).toLocaleDateString()
+          : 'N/A',
+        extendedOn: latestInvoice.createdAt
+          ? new Date(latestInvoice.createdAt).toLocaleDateString()
+          : 'N/A',
+        planName: latestInvoice.planName,
+        planDescription: latestInvoice.planDescription,
+        planDuration: `${latestInvoice.planDuration} Month${latestInvoice.planDuration > 1 ? 's' : ''}`,
+        amount: latestInvoice.planPrice,
+        totalAmount: latestInvoice.planPrice,
+      }
+    : null;
+
+    const onSubmit: SubmitHandler<MembershipSettingFormInputs> = (data) => {
+      const requestData: any = {
         memberId: currentMember?._id,
         duration: Number(data.duration),
-    };
-
-    if (data.planId !== currentMember?.membership?.plan._id) {
-        requestData.newPlanId = data.planId; // Pass newPlanId only if it has been changed
-    }
-
-    dispatch(extendMembership(requestData))
+      };
+  
+      if (data.planId !== currentMember?.membership?.plan._id) {
+        requestData.newPlanId = data.planId;
+      }
+  
+      dispatch(extendMembership(requestData))
         .then(() => {
-            toast.success("Membership extended successfully");
-            // After extending membership, generate the invoice
-            dispatch(createInvoice({ memberId: currentMember?._id }))
+          toast.success('Membership extended successfully');
+          dispatch(createInvoice({ memberId: currentMember?._id }))
             .then((invoiceResponse) => {
-              console.log("Invoice generated successfully:", invoiceResponse);
+              toast.success('Invoice generated successfully');
+              dispatch(fetchInvoiceByMemberId(memberId!)); // Fetch the invoice again after creation
             })
             .catch((error) => {
-              toast.error("Error extending/updating membership");
-              console.error("Error generating invoice:", error);
+              toast.error('Error generating invoice');
+              console.error('Error generating invoice:', error);
             });
-
-            // if(memberId) {
-            // dispatch(fetchInvoiceByMemberId(memberId));
-            // }
         })
         .catch((error) => {
-            console.error("Error extending/updating membership:", error);
+          toast.error('Error extending membership');
+          console.error('Error extending/updating membership:', error);
         });
-  };
-
-   // Prepare invoiceData for PDF rendering
-   const invoiceData = {
-    billingTo: {
-      name: currentMember?.firstName + ' ' + currentMember?.lastName,
-      email: currentMember?.email,
-      mobile: currentMember?.mobile,
-    },
-    invoiceId: currentInvoice?.invoiceId,
-    pastExpiryDate: currentInvoice?.previousEndDate ? new Date(currentInvoice.previousEndDate).toLocaleDateString() : 'N/A',
-    newExpiryDate: currentInvoice?.endDate ? new Date(currentInvoice.endDate).toLocaleDateString() : 'N/A',
-    extendedOn: currentInvoice?.createdAt ? new Date(currentInvoice.createdAt).toLocaleDateString() : 'N/A',
-    planName: currentInvoice?.planName,
-    planDescription: currentInvoice?.planDescription,
-    planDuration: `${currentInvoice?.planDuration} Month${currentInvoice?.planDuration > 1 ? 's' : ''}`,
-    amount: currentInvoice?.planPrice,
-    totalAmount: currentInvoice?.planPrice,
-  };
-
+    };
+    
+    console.log("Length:", currentMember?.membership?.extensions.length)
 
   return (
     <>
@@ -337,11 +339,11 @@ const MembershipSetting: React.FC = () => {
                   </div>
                   <div className="text-right sm:w-3/12 xl:w-2/12">
 
-                  {currentInvoice?.invoiceId ? (
+                  {latestInvoice?.invoiceId ? (
                     <PDFDownloadLink
                     className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90 sm:py-2.5 sm:px-6"
                     document={<Invoice invoiceData={invoiceData} />}
-                    fileName={`invoice_${currentInvoice?.invoiceId || 'invoice'}.pdf`}
+                    fileName={`invoice_${latestInvoice?.invoiceId || 'invoice'}.pdf`}
                   >
                     {({ loading }) => (loading ? 'Generating...' : 'Download')}
                   </PDFDownloadLink>

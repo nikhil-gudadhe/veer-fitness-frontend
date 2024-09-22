@@ -1,13 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../helpers/axiosInstance';
+import { Invoice } from '../../src/types/Invoice.ts';
 
 interface InvoiceState {
-    currentInvoice: any | null;
+    invoices: Invoice[],
+    currentInvoice: Invoice | null;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: InvoiceState = {
+    invoices: [],
     currentInvoice: null,
     loading: false,
     error: null,
@@ -62,6 +65,7 @@ const invoiceSlice = createSlice({
             .addCase(createInvoice.fulfilled, (state, action) => {
                 state.loading = false;
                 state.currentInvoice = action.payload;
+                state.invoices.push(action.payload);
             })
             .addCase(createInvoice.rejected, (state, action) => {
                 state.loading = false;
@@ -85,7 +89,13 @@ const invoiceSlice = createSlice({
             })
             .addCase(fetchInvoiceByMemberId.fulfilled, (state, action) => {
               state.loading = false;
-              state.currentInvoice = action.payload;
+              if (Array.isArray(action.payload)) {
+                state.invoices = action.payload;  // Store the array of invoices
+              } else {
+                // If it's a single invoice, append it to the `state.invoices` array
+                state.invoices = [...state.invoices, action.payload];
+              }
+              
             })
             .addCase(fetchInvoiceByMemberId.rejected, (state, action) => {
               state.loading = false;
