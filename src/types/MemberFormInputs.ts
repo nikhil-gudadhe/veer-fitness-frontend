@@ -1,6 +1,7 @@
 import { MembershipPlanFormInputs } from './MembershipPlanFormInputs';
 
 interface MembershipExtension {
+  _id: string;
   previousEndDate: Date;
   newEndDate: Date;
   extendedBy: string;

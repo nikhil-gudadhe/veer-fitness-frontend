@@ -80,7 +80,7 @@ const Invoice: React.FC<{ invoiceData: any }> = ({ invoiceData }) => {
           <Text style={styles.text}>Invoice ID: {invoiceData.invoiceId}</Text>
           <Text style={styles.text}>Previous Expiry Date: {invoiceData.pastExpiryDate}</Text>
           <Text style={styles.text}>New Expiry Date: {invoiceData.newExpiryDate}</Text>
-          <Text style={styles.text}>Extended On: {invoiceData.extendedOn}</Text>
+          <Text style={styles.text}>Renewed On: {invoiceData.extendedOn}</Text>
         </View>
 
         {/* Plan Information */}

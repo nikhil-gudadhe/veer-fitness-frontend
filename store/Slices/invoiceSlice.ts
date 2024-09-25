@@ -46,64 +46,59 @@ export const fetchInvoiceByMemberId = createAsyncThunk(
     }
   );
 
-const invoiceSlice = createSlice({
+  const invoiceSlice = createSlice({
     name: 'invoice',
     initialState,
     reducers: {
-        resetInvoiceState: (state) => {
-            state.currentInvoice = null;
-            state.loading = false;
-            state.error = null;
-        },
+      resetInvoiceState: (state) => {
+        state.currentInvoice = null;
+        state.loading = false;
+        state.error = null;
+      },
     },
     extraReducers: (builder) => {
-            builder
-            .addCase(createInvoice.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(createInvoice.fulfilled, (state, action) => {
-                state.loading = false;
-                state.currentInvoice = action.payload;
-                state.invoices.push(action.payload);
-            })
-            .addCase(createInvoice.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload as string;
-            })
-            .addCase(fetchInvoiceById.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchInvoiceById.fulfilled, (state, action) => {
-                state.loading = false;
-                state.currentInvoice = action.payload;
-            })
-            .addCase(fetchInvoiceById.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload as string;
-            })
-            .addCase(fetchInvoiceByMemberId.pending, (state) => {
-              state.loading = true;
-              state.error = null;
-            })
-            .addCase(fetchInvoiceByMemberId.fulfilled, (state, action) => {
-              state.loading = false;
-              if (Array.isArray(action.payload)) {
-                state.invoices = action.payload;  // Store the array of invoices
-              } else {
-                // If it's a single invoice, append it to the `state.invoices` array
-                state.invoices = [...state.invoices, action.payload];
-              }
-              
-            })
-            .addCase(fetchInvoiceByMemberId.rejected, (state, action) => {
-              state.loading = false;
-              state.error = action.payload as string;
-            });
+      builder
+        .addCase(createInvoice.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(createInvoice.fulfilled, (state, action) => {
+          state.loading = false;
+          state.currentInvoice = action.payload;
+          state.invoices.push(action.payload);
+        })
+        .addCase(createInvoice.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string;
+        })
+        .addCase(fetchInvoiceById.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchInvoiceById.fulfilled, (state, action) => {
+          state.loading = false;
+          state.currentInvoice = action.payload;
+        })
+        .addCase(fetchInvoiceById.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string;
+        })
+        .addCase(fetchInvoiceByMemberId.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchInvoiceByMemberId.fulfilled, (state, action) => {
+          state.loading = false;
+          const { invoices } = action.payload; // Extract invoices from payload
+          state.invoices = invoices || [];  // Ensure invoices are handled correctly
+        })
+        .addCase(fetchInvoiceByMemberId.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string;
+        });
     },
-});
-
+  });
+  
 export const { resetInvoiceState } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

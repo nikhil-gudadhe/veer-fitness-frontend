@@ -1,5 +1,6 @@
 export interface Invoice {
     _id: string;
+    extensionId: string;
     invoiceId: string;
     memberId: string;
     memberName: string;

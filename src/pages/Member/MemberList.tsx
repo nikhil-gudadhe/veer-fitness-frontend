@@ -79,11 +79,12 @@ const MemberList: React.FC<MemberListProps> = ({ onEdit }) => {
         { header: 'Plan' },
         { header: 'Actions' },
     ],
+    //charAt(0).toUpperCase() + member.gender.slice(1)
     rows: members.map((member) => ({
         firstName: member.firstName,
         lastName: member.lastName,
         mobile: member.mobile,
-        gender: member.gender.charAt(0).toUpperCase() + member.gender.slice(1),
+        gender: member.gender,
         plan: member.membership?.plan?.name || 'No plan selected',
         actions: (
         <div className="flex items-center space-x-3.5">
