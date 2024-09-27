@@ -25,7 +25,7 @@ const MembershipSetting: React.FC = () => {
   const { membershipPlans } = useSelector((state: RootState) => state.plans);
   const { invoices } = useSelector((state: RootState) => state.invoices);
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<MembershipSettingFormInputs>({
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<MembershipSettingFormInputs>({
     defaultValues: {
       planId: '',
       duration: 1,
@@ -57,6 +57,15 @@ const MembershipSetting: React.FC = () => {
   const selectedPlanId = watch('planId');
   const selectedDuration = watch('duration');
 
+  useEffect(() => {
+    if (selectedPlanId && membershipPlans.length > 0) {
+      const selectedPlan = membershipPlans.find(plan => plan._id === selectedPlanId);
+      if (selectedPlan && selectedPlan.duration) {  
+        setValue('duration', selectedPlan.duration); 
+      }
+    }
+  }, [selectedPlanId, membershipPlans, setValue]);
+  
   // Find the correct invoice for each extension
   const getInvoiceForExtension = (extensionId: string) => {
     return invoices.find((invoice) => invoice.extensionId === extensionId);
@@ -98,9 +107,13 @@ const MembershipSetting: React.FC = () => {
     dispatch(extendMembership(requestData))
       .then(() => {
         toast.success('Membership extended successfully');
+        if (memberId) {
+          dispatch(fetchMemberById(memberId)); // Fetch updated member details with extensions
+          dispatch(fetchInvoiceByMemberId(memberId)); // Fetch updated invoices
+        }
         dispatch(createInvoice({ memberId: currentMember?._id }))
           .then(() => {
-            toast.success('Invoice generated successfully');
+            //toast.success('Invoice generated successfully');
             dispatch(fetchInvoiceByMemberId(memberId!)); // Fetch the invoice again after creation
           })
           .catch((error) => {
@@ -269,49 +282,6 @@ const MembershipSetting: React.FC = () => {
               </div>
             </div>
           </div>
-
-
-          {/* Membership History */}
-          {/* <div className="col-span-5 xl:col-span-5">
-            <div className="rounded-sm border border-stroke bg-white py-3 shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">Membership History</h3>
-              </div>
-              {currentMember?.membership?.extensions && currentMember?.membership?.extensions?.length > 0 ? (
-                currentMember.membership.extensions.map((extension, index) => {
-                  const linkedInvoice = getInvoiceForExtension(extension._id);
-                  const invoiceData = getInvoiceData(linkedInvoice);
-
-                  return (
-                    <div key={index} className="flex justify-between gap-2.5 py-3 px-6 hover:bg-gray-2 dark:hover:bg-meta-4 sm:items-center sm:justify-start">
-                      <div className="flex items-center gap-5.5 sm:w-5/12 xl:w-5/12">
-                        <p className="font-medium text-black dark:text-white">Extension Duration: {extension.duration} Month(s)</p>
-                      </div>
-                      <div className="hidden w-5/12 xl:block">
-                        <p className="font-medium text-black dark:text-white">New Expiry Date: {new Date(extension.newEndDate).toLocaleDateString()}</p>
-                      </div>
-                      <div className="text-right sm:w-3/12 xl:w-2/12">
-                        {linkedInvoice && invoiceData ? (
-                          <PDFDownloadLink
-                            className="inline-flex rounded bg-primary py-1 px-3 font-medium text-white hover:bg-opacity-90"
-                            document={<Invoice invoiceData={invoiceData} />}
-                            fileName={`invoice_${linkedInvoice.invoiceId || 'invoice'}.pdf`}
-                          >
-                            {({ loading }) => (loading ? 'Generating...' : 'Download')}
-                          </PDFDownloadLink>
-                        ) : (
-                          <p>Invoice not available yet</p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="px-6 py-3">No extensions found.</p>
-              )}
-            </div>
-          </div> */}
-          {/*  */}
 
           {/* Membership History */}
           <div className="col-span-5 xl:col-span-5">
