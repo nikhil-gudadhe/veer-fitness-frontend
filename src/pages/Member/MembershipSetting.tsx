@@ -113,7 +113,7 @@ const MembershipSetting: React.FC = () => {
         }
         dispatch(createInvoice({ memberId: currentMember?._id }))
           .then(() => {
-            //toast.success('Invoice generated successfully');
+            toast.success('Invoice generated successfully');
             dispatch(fetchInvoiceByMemberId(memberId!)); // Fetch the invoice again after creation
           })
           .catch((error) => {
