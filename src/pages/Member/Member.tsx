@@ -39,7 +39,7 @@ const Member: React.FC = () => {
 
     useEffect(() => {
       if (success) {
-        //toast.success(success);
+        toast.success(success);
         dispatch(resetSuccess());
       }
   

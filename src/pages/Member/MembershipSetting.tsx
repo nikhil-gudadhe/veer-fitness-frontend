@@ -113,7 +113,7 @@ const MembershipSetting: React.FC = () => {
         }
         dispatch(createInvoice({ memberId: currentMember?._id }))
           .then(() => {
-            toast.success('Invoice generated successfully');
+            //toast.success('Invoice generated successfully');
             dispatch(fetchInvoiceByMemberId(memberId!)); // Fetch the invoice again after creation
           })
           .catch((error) => {
@@ -199,7 +199,7 @@ const MembershipSetting: React.FC = () => {
                     <button
                       className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black dark:border-strokedark dark:text-white"
                       type="button"
-                      onClick={() => navigate('/members')}
+                      onClick={() => navigate('/all-members')}
                     >
                       Cancel
                     </button>

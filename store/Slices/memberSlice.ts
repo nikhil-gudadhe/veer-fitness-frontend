@@ -144,7 +144,8 @@ const memberSlice = createSlice({
             })
             .addCase(registerMember.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
                 state.loading = false;
-                state.members.push(action.payload);
+                state.members.unshift(action.payload);
+                state.members = state.members.slice(0, 5);
                 state.success = 'Member registered successfully';
             })
             .addCase(registerMember.rejected, (state, action) => {
@@ -203,7 +204,6 @@ const memberSlice = createSlice({
             .addCase(fetchMemberById.fulfilled, (state, action: PayloadAction<MemberFormInputs>) => {
                 state.loading = false;
                 state.currentMember = action.payload;
-                state.success = 'Member fetched successfully';
             })
             .addCase(fetchMemberById.rejected, (state, action) => {
                 state.loading = false;

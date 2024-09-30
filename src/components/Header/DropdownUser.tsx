@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
-
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, logout } from '../../../store/Slices/authSlice.ts';
 import { AppDispatch } from '../../../store/store.ts';
+import { RootState } from '../../../store/store.ts';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
-
+  
+  // Fetch logged-in user info from Redux store
+  const { user } = useSelector((state: RootState) => state.auth);
+  
   const handleLogout = async () => {
     await dispatch(logoutUser());
     dispatch(logout());
@@ -26,9 +29,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+          {user?.data?.username}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">{user?.data?.role}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
