@@ -20,6 +20,7 @@ import Dropdowns from '../pages/ProElements/Dropdowns.tsx';
 import MembershipPlan from '../pages/MembershipPlan/MembershipPlan.tsx';
 import Member from '../pages/Member/Member.tsx';
 import MembershipSetting from '../pages/Member/MembershipSetting.tsx';
+import User from '../pages/User/User.tsx';
 export {
     Loader,
     PageTitle,
@@ -43,4 +44,5 @@ export {
     MembershipSetting,
     Invoice,
     Dropdowns,
+    User
 };
