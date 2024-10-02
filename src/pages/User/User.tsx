@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import UserModel from './UserModel';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { userFormInputs } from '../../types/UserFormInputs';
+import { UserFormInputs } from '../../types/UserFormInputs';
 
 const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +14,7 @@ const User: React.FC = () => {
         //setCurrentMember(null);
       };
 
-      const handleAddUser = (user: userFormInputs) => {
+      const handleAddUser = (user: UserFormInputs) => {
         // if (member._id) {
         //     dispatch(updateMember(member));
         //   } else {

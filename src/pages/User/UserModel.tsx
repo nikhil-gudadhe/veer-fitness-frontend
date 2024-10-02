@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
-import { userFormInputs } from '../../types/UserFormInputs';
+import { UserFormInputs } from '../../types/UserFormInputs';
 
 interface UserModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: userFormInputs) => void;
-    user?: userFormInputs | null;
+    onSubmit: (data: UserFormInputs) => void;
+    user?: UserFormInputs | null;
 }
 
 const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<userFormInputs>({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<UserFormInputs>({
         defaultValues: user || {
             username: '',
             email: '',
@@ -21,7 +21,7 @@ const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
         },
     });
 
-    const onSubmit: SubmitHandler<userFormInputs> = (data) => {
+    const onSubmit: SubmitHandler<UserFormInputs> = (data) => {
         if (data) {
             //dispatch(updateMembershipPlan(data));
         } else {
@@ -111,8 +111,8 @@ const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
                 Submit
             </button>
         </form>
+        </div>
     </div>
-</div>
     </>
 );
 }

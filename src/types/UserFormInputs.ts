@@ -1,4 +1,4 @@
-export interface userFormInputs {
+export interface UserFormInputs {
     username: string;
     email: string;
     firstName?: string;
