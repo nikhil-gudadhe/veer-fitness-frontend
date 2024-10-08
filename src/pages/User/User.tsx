@@ -2,9 +2,15 @@ import React, {useState, useEffect} from 'react'
 import UserModel from './UserModel';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { UserFormInputs } from '../../types/UserFormInputs';
+import { registerMember } from '../../../store/Slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../store/store';
+import UserList from './UserList';
 
 const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
+
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -15,13 +21,18 @@ const User: React.FC = () => {
       };
 
       const handleAddUser = (user: UserFormInputs) => {
-        // if (member._id) {
-        //     dispatch(updateMember(member));
-        //   } else {
-        //     dispatch(registerMember(member));
-        //   }
+        if (user._id) {
+            //dispatch(updateMember(member));
+          } else {
+            dispatch(registerMember(user));
+          }
         handleCloseModal();
     };
+
+    const handleEditUser = (user: UserFormInputs) => {
+        //setCurrentMembershipPlan(membershipPlan);
+        handleOpenModal();
+      };
       
 
  return (
@@ -47,7 +58,7 @@ const User: React.FC = () => {
         <UserModel isOpen={isModalOpen}  onClose={handleCloseModal} onSubmit={handleAddUser}/>
     
         <div className="flex flex-col gap-10 mt-5">
-            {/* <MemberList onEdit={handleEditMember} /> */}
+            {/* <UserList onEdit={handleEditUser} /> */}
         </div>
     </>
     );
