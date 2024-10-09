@@ -14,16 +14,18 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     const { users, loading, error } = useSelector((state: RootState) => state.auth);
 
     useEffect(() => {
-        dispatch(fetchAllUsers({ page: 1, limit: 10 }));
-    }, [dispatch]);
+        if (users.length === 0) {
+            dispatch(fetchAllUsers({ page: 1, limit: 10 }));
+        }
+    }, [dispatch, users.length]);
 
     if (loading) {
         return <Spinner />;
     }
 
-    if (error) {
-        return <p className="text-red-500">Failed to load users: {error}</p>;
-    }
+    // if (error) {
+    //     return <p className="text-red-500">Failed to load users: {error}</p>;
+    // }
 
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">

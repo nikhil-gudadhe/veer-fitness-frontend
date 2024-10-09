@@ -58,7 +58,7 @@ const User: React.FC = () => {
         <UserModel isOpen={isModalOpen}  onClose={handleCloseModal} onSubmit={handleAddUser}/>
     
         <div className="flex flex-col gap-10 mt-5">
-            {/* <UserList onEdit={handleEditUser} /> */}
+            <UserList onEdit={handleEditUser} />
         </div>
     </>
     );
