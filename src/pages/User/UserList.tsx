@@ -23,9 +23,9 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
         return <Spinner />;
     }
 
-    // if (error) {
-    //     return <p className="text-red-500">Failed to load users: {error}</p>;
-    // }
+    if(error) {
+        <span>{error}</span>
+    }
 
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
