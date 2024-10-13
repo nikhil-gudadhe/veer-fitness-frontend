@@ -30,11 +30,6 @@ const MemberList: React.FC<MemberListProps> = ({ onEdit }) => {
         dispatch(fetchMembers({ page: currentPage, limit: rowsPerPage }));
     }, [dispatch, currentPage, rowsPerPage]);
 
-
-    useEffect(()=>{
-        console.log(members)
-    }, [members])
-
     useEffect(() => {
         if (debounceTimeout.current) {
             clearTimeout(debounceTimeout.current);
