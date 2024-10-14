@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from '../store/Slices/authSlice';
 import { AppDispatch, RootState } from '../store/store.ts';
 import { ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 import 'react-toastify/dist/ReactToastify.css';  
 import { 
   Loader, 
@@ -35,9 +37,16 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const loading = useSelector((state: RootState) => state.auth.loading);
-
-  useEffect(() => {dispatch(getCurrentUser());
+  const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(getCurrentUser())
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/signin');
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   return loading ? (
     <Loader />

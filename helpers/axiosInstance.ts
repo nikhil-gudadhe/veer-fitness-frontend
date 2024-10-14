@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from '../constants';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store/store';
+import store  from '../store/store'; // Import the store directly
 import { logoutUser } from '../store/Slices/authSlice';
 
 // Define the configuration for axios
@@ -10,35 +9,35 @@ const axiosInstance = axios.create({
   withCredentials: true, // Include cookies in requests
 });
 
-// Axios Interceptor for handling token refresh
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-    const dispatch = useDispatch<AppDispatch>();
 
-    // Check if the error is due to an expired6 access token (401 Unauthorized)
+// Move the interceptor logic to the end
+axiosInstance.interceptors.response.use(
+  (response) => response, // If the response is successful, return it
+  async (error) => {
+    console.log('Interceptor caught an error:', error.response?.status);
+    const originalRequest = error.config;
+
+    // Check if error is 401 (Unauthorized) and the request hasn't been retried
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Prevent multiple retries for the same request
+      originalRequest._retry = true; // Mark the request as retried
 
       try {
-        // Attempt to refresh the access token using the refresh token endpoint
-        const refreshResponse = await axiosInstance.post('/users/refresh-token');
-        
+        // Call refresh token endpoint to get new access token
+        const { data } = await axiosInstance.post('/refresh-token');
+
         // Retry the original request with the new access token
         return axiosInstance(originalRequest);
-        
       } catch (refreshError) {
-        // If refreshing the token fails, log the user out and reject the request
-        dispatch(logoutUser()); // Dispatch logout action from Redux store
+        console.error('Token refresh failed');
+        
+        // Dispatch a logout action to Redux or handle it in your own way
+        //store.dispatch(logoutUser()); // Use store.dispatch to dispatch the logout action
+
         return Promise.reject(refreshError);
       }
     }
 
-    // If the error is not related to token expiration, reject the error
-    return Promise.reject(error);
+    return Promise.reject(error); // If the error is not 401 or retry failed, reject the promise
   }
 );
 
