@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from '../store/Slices/authSlice';
-import { AppDispatch, RootState } from '../store/store.ts';
+import store, { AppDispatch, RootState } from '../store/store.ts';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,8 +38,12 @@ function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const loading = useSelector((state: RootState) => state.auth.loading);
   const navigate = useNavigate();
+  
   useEffect(() => {
-    dispatch(getCurrentUser())
+    console.log("isAuthenticated: ", isAuthenticated)
+    console.log("Persisted Auth State:", store.getState().auth);
+    dispatch(getCurrentUser());
+  
   }, [dispatch]);
 
   useEffect(() => {

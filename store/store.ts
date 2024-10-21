@@ -12,6 +12,7 @@ const persistConfig = {
   key: 'root',
   storage,
   whitelist: ['auth'],
+  blacklist: ['register'],
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authSliceReducer);
@@ -24,6 +25,10 @@ const store = configureStore({
     members: memberSliceReducer,
     invoices: invoiceSliceReducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Disable the serializable check to avoid non-serializable value warning
+    }),
 });
 
 export const persistor = persistStore(store);
