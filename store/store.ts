@@ -1,37 +1,25 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authSliceReducer from './Slices/authSlice';
+import authSliceReducer from './Slices/authSlice';  // Make sure this path is correct and the reducer is properly exported
 import enquirySliceReducer from './Slices/enquirySlice';
-import membershipPlanSliceReducer from './Slices/membershipPlanSlice'
-import memberSliceReducer from './Slices/memberSlice'
-import invoiceSliceReducer from './Slices/invoiceSlice'
+import membershipPlanSliceReducer from './Slices/membershipPlanSlice';
+import memberSliceReducer from './Slices/memberSlice';
+import invoiceSliceReducer from './Slices/invoiceSlice';
 
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['auth'],
-  blacklist: ['register'],
-};
-
-const persistedAuthReducer = persistReducer(persistConfig, authSliceReducer);
-
+// Configure the Redux store
 const store = configureStore({
   reducer: {
-    auth: persistedAuthReducer,
+    auth: authSliceReducer,  // Ensure this is initialized after it's been imported
     enquiries: enquirySliceReducer,
     plans: membershipPlanSliceReducer,
     members: memberSliceReducer,
-    invoices: invoiceSliceReducer
+    invoices: invoiceSliceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // Disable the serializable check to avoid non-serializable value warning
+      serializableCheck: false, // Disable the serializable check
     }),
 });
 
-export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 

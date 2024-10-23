@@ -4,8 +4,10 @@ import { UserFormInputs } from "../../src/types/UserFormInputs.ts";
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: UserFormInputs | null; // Authenticated user
-  users: UserFormInputs[];      // List of users (for fetchAllUsers)
+  user: UserFormInputs | null; 
+  users: UserFormInputs[];
+  accessToken: string | null;
+  refreshToken: string | null;
   totalUsers: number;
   totalPages: number;
   currentPage: number;
@@ -15,8 +17,10 @@ interface AuthState {
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  user: null,    // Holds currently authenticated user
-  users: [],     // List of users fetched via fetchAllUsers
+  user: null,   
+  users: [], 
+  accessToken: null,
+  refreshToken: null,
   totalUsers: 0,
   totalPages: 0,
   currentPage: 1,
@@ -95,7 +99,10 @@ const authSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
       state.isAuthenticated = true;
-      state.user = action.payload;
+      state.accessToken = action.payload.data.accessToken;
+      state.refreshToken = action.payload.data.refreshToken;
+      state.user = action.payload.data;
+
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
@@ -109,7 +116,7 @@ const authSlice = createSlice({
     builder.addCase(getCurrentUser.fulfilled, (state, action) => {
       state.loading = false;
       state.isAuthenticated = true;
-      state.user = action.payload;
+      state.user = action.payload.data;
     });
     builder.addCase(getCurrentUser.rejected, (state) => {
       state.loading = false;
@@ -135,6 +142,8 @@ const authSlice = createSlice({
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      state.accessToken = null;
+      state.refreshToken = null;
       state.loading = false;
       state.error = null;
     });

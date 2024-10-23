@@ -11,6 +11,7 @@ const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
 
+    
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
