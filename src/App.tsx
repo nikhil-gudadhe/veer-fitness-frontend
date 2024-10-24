@@ -6,7 +6,31 @@ import { AppDispatch, RootState } from '../store/store.ts';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';  
-import { Loader, PageTitle, SignIn, SignUp, ECommerce, DefaultLayout, AuthLayout, Member, Enquiry } from './components/index.ts';
+import {
+  Loader,
+  PageTitle,
+  SignIn,
+  SignUp,
+  ECommerce,
+  Calendar,
+  Profile,
+  FormElements,
+  FormLayout,
+  Tables,
+  Settings,
+  Chart,
+  Alerts,
+  Buttons,
+  DefaultLayout,
+  AuthLayout,
+  Enquiry,
+  Member,
+  MembershipPlan,
+  MembershipSetting,
+  Dropdowns,
+  Invoice,
+  User
+} from './components/index.ts';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -42,7 +66,7 @@ function App() {
             </AuthLayout>
           }
         />
-        
+
         <Route
           path="signup"
           element={
@@ -89,7 +113,123 @@ function App() {
           }
         />
 
-        {/* Catch-all route */}
+        <Route
+          path="membership-plan"
+          element={
+            <DefaultLayout>
+              <AuthLayout authentication={true}>
+                <PageTitle title="Membership Plan Dashboard | Veer Fitness - Your Ultimate Gym Management Solution" />
+                <MembershipPlan />
+              </AuthLayout>
+            </DefaultLayout>
+          }
+        />
+
+        <Route
+          path="membership-setting/:memberId"
+          element={
+            <DefaultLayout>
+              <AuthLayout authentication={true}>
+                <PageTitle title="Membership Setting Dashboard | Veer Fitness - Your Ultimate Gym Management Solution" />
+                <MembershipSetting />
+              </AuthLayout>
+            </DefaultLayout>
+          }
+        />
+
+        <Route
+          path="user"
+          element={
+            <DefaultLayout>
+              <AuthLayout authentication={true}>
+                <PageTitle title="User Dashboard | Veer Fitness - Your Ultimate Gym Management Solution" />
+                <User />
+              </AuthLayout>
+            </DefaultLayout>
+          }
+        />
+
+        <Route path="calendar" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Calendar | Veer Fitness - Your Ultimate Gym Management Solution" />
+              <Calendar />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="profile" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Profile | Veer Fitness - Your Ultimate Gym Management Solution" />
+              <Profile />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="forms/form-elements" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Form Elements | Veer Fitness - Your Ultimate Gym Management Solution" />
+              <FormElements />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="forms/form-layout" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Form Layout | Veer Fitness - Your Ultimate Gym Management Solution" />
+              <FormLayout />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="tables" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Tables | Veer Fitness - Your Ultimate Gym Management Solution" />
+              </AuthLayout>
+              <Tables />
+          </DefaultLayout>
+        } />
+
+        <Route path="settings" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Settings | Veer Fitness - Your Ultimate Gym Management Solution" />
+              <Settings />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="chart" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+              <PageTitle title="Basic Chart | Veer Fitness - Your Ultimate Gym Management Solution" />
+              <Chart />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="ui/invoice" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+            <PageTitle title="Invoice | Veer Fitness - Your Ultimate Gym Management Solution" />
+            {/* <Invoice /> */}
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
+        <Route path="ui/dropdowns" element={
+          <DefaultLayout>
+            <AuthLayout authentication={true}>
+            <PageTitle title="Invoice | Veer Fitness - Your Ultimate Gym Management Solution" />
+            <Dropdowns />
+            </AuthLayout>
+          </DefaultLayout>
+        } />
+
         <Route
           path="*"
           element={

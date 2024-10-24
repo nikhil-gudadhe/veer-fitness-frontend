@@ -14,7 +14,7 @@ interface UserModalProps {
 
 const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<UserFormInputs>({
+    const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<UserFormInputs>({
         defaultValues: user || {
             username: '',
             email: '',
