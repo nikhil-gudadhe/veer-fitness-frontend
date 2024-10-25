@@ -24,8 +24,8 @@ const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
     });
 
     const onSubmit: SubmitHandler<UserFormInputs> = (data) => {
-        if (user) {
-            // Update user logic can go here (if needed).
+        if (data._id) {
+            //dispatch(updateMembershipPlan(data));
         } else {
             // Dispatch registerMember action for new user registration
             dispatch(registerMember(data));

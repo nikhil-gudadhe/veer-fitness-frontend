@@ -13,6 +13,7 @@ interface AuthState {
   currentPage: number;
   loading: boolean;
   error: string | null;
+  success: string | null;
 }
 
 const initialState: AuthState = {
@@ -25,7 +26,9 @@ const initialState: AuthState = {
   totalPages: 0,
   currentPage: 1,
   loading: false,
-  error: null,};
+  error: null,
+  success: null,
+}
 
 // Register member
 export const registerMember = createAsyncThunk("auth/registerMember", async (data: any, { rejectWithValue }) => {
@@ -78,15 +81,23 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
     },
+    resetSuccess(state) {
+      state.success = null;
+    },
+    resetError(state) {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(registerMember.pending, (state) => {
       state.loading = true;
+      state.error = null;
     });
     builder.addCase(registerMember.fulfilled, (state, action) => {
       state.loading = false;
       state.isAuthenticated = true; 
-      state.user = action.payload; 
+      state.user = action.payload;
+      state.success = 'User registered successfully'; 
     });
     builder.addCase(registerMember.rejected, (state, action) => {
       state.loading = false;
@@ -150,6 +161,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, resetSuccess, resetError} = authSlice.actions;
 
 export default authSlice.reducer;

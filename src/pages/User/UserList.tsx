@@ -33,9 +33,6 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                 <table className="w-full table-auto">
                     <thead>
                         <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                            <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                Avatar
-                            </th>
                             <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                                 Username
                             </th>
@@ -60,13 +57,6 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                         )}
                         {users.map((user) => (
                             <tr key={user._id}>
-                                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                                    {/* <img
-                                        src={user.avatar || 'default-avatar.png'}
-                                        alt={`${user.username}'s avatar`}
-                                        className="w-10 h-10 rounded-full"
-                                    /> */}
-                                </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <h5 className="font-medium text-black dark:text-white">
                                         {user.username}

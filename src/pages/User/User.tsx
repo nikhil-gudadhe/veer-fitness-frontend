@@ -2,15 +2,16 @@ import React, {useState, useEffect} from 'react'
 import UserModel from './UserModel';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { UserFormInputs } from '../../types/UserFormInputs';
-import { registerMember } from '../../../store/Slices/authSlice';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store/store';
+import { registerMember, resetSuccess, resetError } from '../../../store/Slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../../store/store';
+import { toast } from 'react-toastify';
 import UserList from './UserList';
 
 const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
-
+    const { success, error } = useSelector((state: RootState) => state.auth);
     
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -34,6 +35,18 @@ const User: React.FC = () => {
         //setCurrentMembershipPlan(membershipPlan);
         handleOpenModal();
       };
+
+      useEffect(() => {
+        if (success) {
+          toast.success(success);
+          dispatch(resetSuccess());
+        }
+    
+        if (error) {
+          toast.error(error);
+          dispatch(resetError());
+        }
+      }, [success, error, dispatch]);
       
 
  return (
