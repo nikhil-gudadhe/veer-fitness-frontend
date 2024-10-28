@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
 import { UserFormInputs } from '../../types/UserFormInputs';
-import { registerMember } from '../../../store/Slices/authSlice';
+import { registerMember, updateMember } from '../../../store/Slices/authSlice';
 
 interface UserModalProps {
     isOpen: boolean;
@@ -25,7 +25,7 @@ const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
 
     const onSubmit: SubmitHandler<UserFormInputs> = (data) => {
         if (data._id) {
-            //dispatch(updateMembershipPlan(data));
+            dispatch(updateMember(data));
         } else {
             // Dispatch registerMember action for new user registration
             dispatch(registerMember(data));

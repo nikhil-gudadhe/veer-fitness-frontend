@@ -40,6 +40,10 @@ export const registerMember = createAsyncThunk("auth/registerMember", async (dat
   }
 });
 
+export const updateMember = createAsyncThunk("", async (updateMember: UserFormInputs) => {
+
+});
+
 // Login user
 export const loginUser = createAsyncThunk("auth/loginUser", async (data: any) => {
   const response = await axiosInstance.post("/users/login", data);
