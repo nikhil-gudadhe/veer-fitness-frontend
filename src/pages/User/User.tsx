@@ -34,20 +34,23 @@ const User: React.FC = () => {
     const handleEditUser = (user: UserFormInputs) => {
         //setCurrentMembershipPlan(membershipPlan);
         handleOpenModal();
-      };
+    };
 
-      useEffect(() => {
-        if (success) {
-          toast.success(success);
-          dispatch(resetSuccess());
-        }
-    
-        if (error) {
-          toast.error(error);
-          dispatch(resetError());
-        }
-      }, [success, error, dispatch]);
+    useEffect(() => {
+      if (success) {
+        const toastId = 'registerSuccessToast';
+        toast.success(success,  { toastId });
+        console.log("toast.success");
+        dispatch(resetSuccess());
+      }
+  
+      if (error) {
+        toast.error(error);
+        dispatch(resetError());
+      }
       
+    }, [success, error, dispatch]);
+    
 
  return (
     <>
