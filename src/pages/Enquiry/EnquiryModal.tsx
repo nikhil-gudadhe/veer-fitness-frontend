@@ -42,7 +42,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({ isOpen, onClose, enquiry })
    
   }, [enquiry, reset]);
 
-  const onSubmit: SubmitHandler<EnquiryFormInputs> = data => {
+  const onSubmit: SubmitHandler<EnquiryFormInputs> = (data) => {
     if (data._id) {
       dispatch(updateEnquiry(data));
     } else {

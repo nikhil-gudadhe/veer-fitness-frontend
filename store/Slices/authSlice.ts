@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../helpers/axiosInstance.ts";
 import { UserFormInputs } from "../../src/types/UserFormInputs.ts";
 
@@ -31,7 +31,7 @@ const initialState: AuthState = {
 }
 
 // Register member
-export const registerMember = createAsyncThunk("auth/registerMember", async (data: any, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk("auth/registerMember", async (data: any, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post("/users/register", data);
     return response.data;
@@ -40,8 +40,9 @@ export const registerMember = createAsyncThunk("auth/registerMember", async (dat
   }
 });
 
-export const updateMember = createAsyncThunk("", async (updateMember: UserFormInputs) => {
-
+export const updateUser = createAsyncThunk("", async (updatedUser: UserFormInputs) => {
+  // const response = await axiosInstance.patch(`/members/edit/${updatedMember._id}`, updatedMember);
+  // return response.data.data;
 });
 
 // Login user
@@ -93,19 +94,26 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(registerMember.pending, (state) => {
+    builder.addCase(registerUser.pending, (state) => {
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(registerMember.fulfilled, (state, action) => {
+    // builder.addCase(registerUser.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.isAuthenticated = true; 
+    //   state.user = action.payload;
+    //   state.success = 'User registered successfully'; 
+    // });
+    builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
       state.loading = false;
-      state.isAuthenticated = true; 
-      state.user = action.payload;
+      state.users.unshift(action.payload); 
+      state.users = state.users.slice(0, 5);
       state.success = 'User registered successfully'; 
     });
-    builder.addCase(registerMember.rejected, (state, action) => {
+
+    builder.addCase(registerUser.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string || "Registration failed";
+      state.error = action.payload as string || "User registration failed";
     });
 
     builder.addCase(loginUser.pending, (state) => {

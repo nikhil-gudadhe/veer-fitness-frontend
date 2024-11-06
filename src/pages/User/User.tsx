@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import UserModel from './UserModel';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { UserFormInputs } from '../../types/UserFormInputs';
-import { registerMember, resetSuccess, resetError } from '../../../store/Slices/authSlice';
+import { registerUser, updateUser, resetSuccess, resetError } from '../../../store/Slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../store/store';
 import { toast } from 'react-toastify';
@@ -10,6 +10,8 @@ import UserList from './UserList';
 
 const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState<UserFormInputs | null>(null);
+
     const dispatch = useDispatch<AppDispatch>();
     const { success, error } = useSelector((state: RootState) => state.auth);
     
@@ -19,28 +21,26 @@ const User: React.FC = () => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        //setCurrentMember(null);
+        setCurrentUser(null);
       };
 
       const handleAddUser = (user: UserFormInputs) => {
         if (user._id) {
-            //dispatch(updateMember(member));
+            dispatch(updateUser(user));
           } else {
-            dispatch(registerMember(user));
+            dispatch(registerUser(user));
           }
         handleCloseModal();
     };
 
     const handleEditUser = (user: UserFormInputs) => {
-        //setCurrentMembershipPlan(membershipPlan);
+        setCurrentUser(user);
         handleOpenModal();
     };
 
     useEffect(() => {
       if (success) {
-        const toastId = 'registerSuccessToast';
-        toast.success(success,  { toastId });
-        console.log("toast.success");
+        toast.success(success);
         dispatch(resetSuccess());
       }
   
@@ -48,10 +48,8 @@ const User: React.FC = () => {
         toast.error(error);
         dispatch(resetError());
       }
-      
     }, [success, error, dispatch]);
     
-
  return (
     <>
         <Breadcrumb pageName="User" />
@@ -72,7 +70,7 @@ const User: React.FC = () => {
         </div>
         </div>
 
-        <UserModel isOpen={isModalOpen}  onClose={handleCloseModal} onSubmit={handleAddUser}/>
+        <UserModel isOpen={isModalOpen} user={currentUser} onClose={handleCloseModal} onSubmit={handleAddUser}/>
     
         <div className="flex flex-col gap-10 mt-5">
             <UserList onEdit={handleEditUser} />
