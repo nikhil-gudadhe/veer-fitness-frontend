@@ -106,6 +106,7 @@ const authSlice = createSlice({
     // });
     builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
       state.loading = false;
+      console.log(action.payload);
       state.users.unshift(action.payload); 
       state.users = state.users.slice(0, 5);
       state.success = 'User registered successfully'; 
@@ -152,7 +153,8 @@ const authSlice = createSlice({
     });
     builder.addCase(fetchAllUsers.fulfilled, (state, action) => {
       state.loading = false;
-      state.users = action.payload.data.users;
+      //state.users = action.payload.data.users;
+      state.users = action.payload.data.users.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());;
       state.totalUsers = action.payload.data.totalUsers;
       state.totalPages = action.payload.data.totalPages;
       state.currentPage = action.payload.data.currentPage;
