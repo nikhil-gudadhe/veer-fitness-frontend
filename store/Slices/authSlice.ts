@@ -45,6 +45,11 @@ export const updateUser = createAsyncThunk("", async (updatedUser: UserFormInput
   // return response.data.data;
 });
 
+export const deleteUser = createAsyncThunk("", async (updatedUser: UserFormInputs) => {
+  // const response = await axiosInstance.patch(`/members/edit/${updatedMember._id}`, updatedMember);
+  // return response.data.data;
+});
+
 // Login user
 export const loginUser = createAsyncThunk("auth/loginUser", async (data: any) => {
   const response = await axiosInstance.post("/users/login", data);
@@ -63,19 +68,31 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
   return null;
 });
 
-export const fetchAllUsers = createAsyncThunk("users/fetchAllUsers", async ({ page, limit }: { page: number; limit: number }, { rejectWithValue }) => {
+// Search user
+export const searchUsers = createAsyncThunk('users/searchUsers',
+  async ({ searchTerm, page = 1, limit = 10 }: { searchTerm: string; page?: number; limit?: number }, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(`/users/all-users`, {
-        params: {
-          page,
-          limit,
-        },
+      const response = await axiosInstance.get('/users/search', {
+        params: { searchTerm, page, limit },
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error || "Failed to fetch users");
+      return thunkAPI.rejectWithValue(error || 'Failed to search user');
     }
   }
+);
+
+export const fetchUsers = createAsyncThunk('users/fetchUsers', 
+  async ({ page = 1, limit = 10 }: { page?: number; limit?: number; }, thunkAPI) => {
+  try {
+    const response = await axiosInstance.get('/users/all-users', {
+      params: { page, limit },
+    });
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error || 'Failed to fetch users');
+  }
+}
 );
 
 const authSlice = createSlice({
@@ -98,12 +115,6 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = null;
     });
-    // builder.addCase(registerUser.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.isAuthenticated = true; 
-    //   state.user = action.payload;
-    //   state.success = 'User registered successfully'; 
-    // });
     builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
       state.loading = false;
       console.log(action.payload);
@@ -111,7 +122,6 @@ const authSlice = createSlice({
       state.users = state.users.slice(0, 5);
       state.success = 'User registered successfully'; 
     });
-
     builder.addCase(registerUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string || "User registration failed";
@@ -148,21 +158,37 @@ const authSlice = createSlice({
       state.user = null;
     });
 
-    builder.addCase(fetchAllUsers.pending, (state) => {
+    builder.addCase(fetchUsers.pending, (state) => {
       state.loading = true;
+      state.error = null;
     });
-    builder.addCase(fetchAllUsers.fulfilled, (state, action) => {
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.loading = false;
-      //state.users = action.payload.data.users;
       state.users = action.payload.data.users.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());;
       state.totalUsers = action.payload.data.totalUsers;
       state.totalPages = action.payload.data.totalPages;
       state.currentPage = action.payload.data.currentPage;
     });
-    builder.addCase(fetchAllUsers.rejected, (state, action) => {
+    builder.addCase(fetchUsers.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
+
+    builder.addCase(searchUsers.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    builder.addCase(searchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload.data.users;
+        state.totalUsers = action.payload.data.totalUsers;
+        state.totalPages = action.payload.data.totalPages;
+        state.currentPage = action.payload.data.currentPage;
+    })
+    builder.addCase(searchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to search users';
+    })
 
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.isAuthenticated = false;
