@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../store/store';
 import { toast } from 'react-toastify';
 import UserList from './UserList';
+import Spinner from '../../components/Spinner';
 
 const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +27,7 @@ const User: React.FC = () => {
 
       const handleAddUser = (user: UserFormInputs) => {
         if (user._id) {
-            dispatch(updateUser(user));
+            //dispatch(updateUser(user));
           } else {
             dispatch(registerUser(user));
           }

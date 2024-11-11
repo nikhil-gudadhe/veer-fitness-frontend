@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserFormInputs } from '../../types/UserFormInputs.ts';
 import { AppDispatch, RootState } from '../../../store/store.ts';
-import { fetchUsers, searchUsers, deleteUser } from '../../../store/Slices/authSlice.ts';
+import { fetchUsers, searchUsers } from '../../../store/Slices/authSlice.ts';
 import Spinner from '../../components/Spinner.tsx';
 import DataTable from '../../components/DataTable';
 
@@ -25,32 +25,43 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
         setOpenDropdownId((prevId) => (prevId === memberId ? null : memberId));
     };
 
+    useEffect(()=>{
+        console.log("loading: ",loading)
+        console.log("users: ", users)
+    },[])
+
+
+    // useEffect(() => {
+    //     if (users.length === 0) {
+    //         dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
+    //     }
+    // }, [dispatch, users.length, currentPage, rowsPerPage ]);
+
     useEffect(() => {
-        if (users.length === 0) {
         dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
-        }
-    }, [dispatch, currentPage, rowsPerPage ]);
+    }, [dispatch, currentPage, rowsPerPage]);
+    
+    // useEffect(() => {
+    //     if (debounceTimeout.current) {
+    //         clearTimeout(debounceTimeout.current);
+    //     }
 
-    useEffect(() => {
-        if (debounceTimeout.current) {
-            clearTimeout(debounceTimeout.current);
-        }
+    //     debounceTimeout.current = setTimeout(() => {
+    //         if (searchTerm) {
+    //         dispatch(searchUsers({ searchTerm, page: 1, limit: rowsPerPage }));
+    //         } else {
+    //             //if(searchTerm.length >= 1)
+    //             if (users.length === 0)
+    //             dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
+    //         }
+    //     }, 1000);
 
-        debounceTimeout.current = setTimeout(() => {
-            if (searchTerm) {
-            dispatch(searchUsers({ searchTerm, page: 1, limit: rowsPerPage }));
-            } else {
-                if(searchTerm.length >= 1)
-                dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
-            }
-        }, 1000);
-
-        return () => {
-            if (debounceTimeout.current) {
-            clearTimeout(debounceTimeout.current);
-            }
-        };
-    }, [searchTerm, dispatch, rowsPerPage]);
+    //     return () => {
+    //         if (debounceTimeout.current) {
+    //         clearTimeout(debounceTimeout.current);
+    //         }
+    //     };
+    // }, [searchTerm, dispatch, rowsPerPage]);
 
     const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);

@@ -111,21 +111,21 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(registerUser.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
-      state.loading = false;
-      console.log(action.payload);
-      state.users.unshift(action.payload); 
-      state.users = state.users.slice(0, 5);
-      state.success = 'User registered successfully'; 
-    });
-    builder.addCase(registerUser.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string || "User registration failed";
-    });
+    // builder.addCase(registerUser.pending, (state) => {
+    //   state.loading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
+    //   state.loading = false;
+    //   console.log(action.payload);
+    //   state.users.unshift(action.payload); 
+    //   state.users = state.users.slice(0, 5);
+    //   state.success = 'User registered successfully'; 
+    // });
+    // builder.addCase(registerUser.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload as string || "User registration failed";
+    // });
 
     builder.addCase(loginUser.pending, (state) => {
       state.loading = true;
@@ -144,6 +144,7 @@ const authSlice = createSlice({
       state.error = action.error.message || "Login failed";
     });
 
+
     builder.addCase(getCurrentUser.pending, (state) => {
       state.loading = true;
     });
@@ -159,8 +160,8 @@ const authSlice = createSlice({
     });
 
     builder.addCase(fetchUsers.pending, (state) => {
-      state.loading = true;
-      state.error = null;
+      //state.loading = true;
+      //state.error = null;
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.loading = false;
