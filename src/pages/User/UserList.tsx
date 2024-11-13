@@ -13,7 +13,7 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { users, loading, totalPages, currentPage } = useSelector((state: RootState) => state.auth);
+    const { users, fetchUsersLoading, totalPages, currentPage } = useSelector((state: RootState) => state.auth);
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
@@ -26,42 +26,34 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     };
 
     useEffect(()=>{
-        console.log("loading: ",loading)
+        console.log("loading: ",fetchUsersLoading)
         console.log("users: ", users)
     },[])
-
-
-    // useEffect(() => {
-    //     if (users.length === 0) {
-    //         dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
-    //     }
-    // }, [dispatch, users.length, currentPage, rowsPerPage ]);
 
     useEffect(() => {
         dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
     }, [dispatch, currentPage, rowsPerPage]);
     
-    // useEffect(() => {
-    //     if (debounceTimeout.current) {
-    //         clearTimeout(debounceTimeout.current);
-    //     }
+    useEffect(() => {
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+        }
 
-    //     debounceTimeout.current = setTimeout(() => {
-    //         if (searchTerm) {
-    //         dispatch(searchUsers({ searchTerm, page: 1, limit: rowsPerPage }));
-    //         } else {
-    //             //if(searchTerm.length >= 1)
-    //             if (users.length === 0)
-    //             dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
-    //         }
-    //     }, 1000);
+        debounceTimeout.current = setTimeout(() => {
+            if (searchTerm) {
+            dispatch(searchUsers({ searchTerm, page: 1, limit: rowsPerPage }));
+            } else {
+                if(searchTerm.length >= 1)
+                dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
+            }
+        }, 1000);
 
-    //     return () => {
-    //         if (debounceTimeout.current) {
-    //         clearTimeout(debounceTimeout.current);
-    //         }
-    //     };
-    // }, [searchTerm, dispatch, rowsPerPage]);
+        return () => {
+            if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+            }
+        };
+    }, [searchTerm, dispatch, rowsPerPage]);
 
     const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -77,7 +69,7 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
         dispatch(fetchUsers({ page: pageNumber, limit: rowsPerPage }));
     };
 
-    if (loading) {
+    if (fetchUsersLoading) {
         return <Spinner />;
     }
 

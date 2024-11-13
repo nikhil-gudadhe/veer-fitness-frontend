@@ -12,6 +12,7 @@ interface AuthState {
   totalPages: number;
   currentPage: number;
   loading: boolean;
+  fetchUsersLoading: boolean;
   error: string | null;
   success: string | null;
 }
@@ -26,6 +27,7 @@ const initialState: AuthState = {
   totalPages: 0,
   currentPage: 1,
   loading: false,
+  fetchUsersLoading: false,
   error: null,
   success: null,
 }
@@ -111,21 +113,21 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // builder.addCase(registerUser.pending, (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
-    //   state.loading = false;
-    //   console.log(action.payload);
-    //   state.users.unshift(action.payload); 
-    //   state.users = state.users.slice(0, 5);
-    //   state.success = 'User registered successfully'; 
-    // });
-    // builder.addCase(registerUser.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload as string || "User registration failed";
-    // });
+    builder.addCase(registerUser.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(registerUser.fulfilled, (state, action:  PayloadAction<UserFormInputs>) => {
+      state.loading = false;
+      console.log(action.payload);
+      state.users.unshift(action.payload); 
+      state.users = state.users.slice(0, 5);
+      state.success = 'User registered successfully'; 
+    });
+    builder.addCase(registerUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string || "User registration failed";
+    });
 
     builder.addCase(loginUser.pending, (state) => {
       state.loading = true;
@@ -144,7 +146,6 @@ const authSlice = createSlice({
       state.error = action.error.message || "Login failed";
     });
 
-
     builder.addCase(getCurrentUser.pending, (state) => {
       state.loading = true;
     });
@@ -160,18 +161,18 @@ const authSlice = createSlice({
     });
 
     builder.addCase(fetchUsers.pending, (state) => {
-      //state.loading = true;
-      //state.error = null;
+      state.fetchUsersLoading = true;
+      state.error = null;
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.loading = false;
+      state.fetchUsersLoading = false;
       state.users = action.payload.data.users.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());;
       state.totalUsers = action.payload.data.totalUsers;
       state.totalPages = action.payload.data.totalPages;
       state.currentPage = action.payload.data.currentPage;
     });
     builder.addCase(fetchUsers.rejected, (state, action) => {
-      state.loading = false;
+      state.fetchUsersLoading = false;
       state.error = action.payload as string;
     });
 
