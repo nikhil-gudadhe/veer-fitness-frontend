@@ -36,7 +36,7 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const loading = useSelector((state: RootState) => state.auth.loading);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -45,11 +45,11 @@ function App() {
   }, [dispatch, isAuthenticated]);
   
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      //navigate('/signin');
-    }
-  }, [loading, isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (!loading && !isAuthenticated) {
+  //     //navigate('/signin');
+  //   }
+  // }, [loading, isAuthenticated, navigate]);
 
   return loading ? (
     <Loader />

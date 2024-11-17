@@ -23,7 +23,7 @@ const User: React.FC = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setCurrentUser(null);
-      };
+    };
 
       const handleAddUser = (user: UserFormInputs) => {
         if (user._id) {
@@ -38,6 +38,11 @@ const User: React.FC = () => {
         setCurrentUser(user);
         handleOpenModal();
     };
+
+    // Log changes to currentUser
+    useEffect(() => {
+      console.log('Updated CurrentUser: ', currentUser);
+    }, [currentUser]);
 
     useEffect(() => {
       if (success) {
