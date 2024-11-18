@@ -24,6 +24,19 @@ const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
 
     const dispatch = useDispatch<AppDispatch>();
 
+    useEffect(() => {
+        if (user) {
+            reset(user);
+        } else {
+            reset({
+                username: '',
+                email: '',
+                role: undefined,
+                password: '',
+            });
+        }
+    }, [user, reset]);
+
     const onSubmit: SubmitHandler<UserFormInputs> = (data) => {
         if (user && user._id) {
             dispatch(updateUser({...data, _id: user._id }));
