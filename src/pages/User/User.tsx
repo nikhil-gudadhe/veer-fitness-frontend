@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../store/store';
 import { toast } from 'react-toastify';
 import UserList from './UserList';
-import Spinner from '../../components/Spinner';
 
 const User: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,9 +24,9 @@ const User: React.FC = () => {
         setCurrentUser(null);
     };
 
-      const handleAddUser = (user: UserFormInputs) => {
+    const handleAddUser = (user: UserFormInputs) => {
         if (user._id) {
-            //dispatch(updateUser(user));
+            dispatch(updateUser(user));
           } else {
             dispatch(registerUser(user));
           }
@@ -39,11 +38,6 @@ const User: React.FC = () => {
         handleOpenModal();
     };
 
-    // Log changes to currentUser
-    useEffect(() => {
-      console.log('Updated CurrentUser: ', currentUser);
-    }, [currentUser]);
-
     useEffect(() => {
       if (success) {
         toast.success(success);
@@ -54,8 +48,9 @@ const User: React.FC = () => {
         toast.error(error);
         dispatch(resetError());
       }
-    }, [success, error, dispatch]);
-    
+
+    }, [success, error, dispatch]);  
+
  return (
     <>
         <Breadcrumb pageName="User" />

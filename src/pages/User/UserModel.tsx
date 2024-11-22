@@ -41,7 +41,7 @@ const UserModel: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
         if (user && user._id) {
             dispatch(updateUser({...data, _id: user._id }));
         } else {
-            dispatch(registerUser(data));
+            //dispatch(registerUser(data));
         }
         onClose();
     };

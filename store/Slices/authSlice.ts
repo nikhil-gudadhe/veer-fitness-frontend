@@ -29,10 +29,9 @@ const initialState: AuthState = {
   loading: false,
   fetchUsersLoading: false,
   error: null,
-  success: null,
+  success: null
 }
 
-// Register member
 export const registerUser = createAsyncThunk("auth/registerMember", async (data: any, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post("/users/register", data);
@@ -42,14 +41,19 @@ export const registerUser = createAsyncThunk("auth/registerMember", async (data:
   }
 });
 
-export const updateUser = createAsyncThunk("", async (updatedUser: UserFormInputs) => {
-  // const response = await axiosInstance.patch(`/members/edit/${updatedMember._id}`, updatedMember);
-  // return response.data.data;
-});
+export const updateUser = createAsyncThunk("auth/updateUser", async (updatedUser: UserFormInputs, { rejectWithValue }) => {
+      try {
+          const response = await axiosInstance.patch(`/users/edit/${updatedUser._id}`, updatedUser);
+          return response.data;
+      } catch (error: any) {
+          return rejectWithValue(
+              error.response?.data?.message || "Failed to update the user"
+          );
+      }
+  }
+);
 
 export const deleteUser = createAsyncThunk("", async (updatedUser: UserFormInputs) => {
-  // const response = await axiosInstance.patch(`/members/edit/${updatedMember._id}`, updatedMember);
-  // return response.data.data;
 });
 
 // Login user
@@ -127,6 +131,25 @@ const authSlice = createSlice({
     builder.addCase(registerUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string || "User registration failed";
+    });
+
+    builder.addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedUser = action.payload;
+        const index = state.users.findIndex((user) => user._id === updatedUser._id);
+        if (index !== -1) {
+            state.users[index] = updatedUser;
+        }
+        state.success = "User updated successfully";
+    });
+    
+    builder.addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
     });
 
     builder.addCase(loginUser.pending, (state) => {

@@ -38,6 +38,7 @@ const Member: React.FC = () => {
     };
 
     useEffect(() => {
+
       if (success) {
         toast.success(success);
         dispatch(resetSuccess());
@@ -48,7 +49,10 @@ const Member: React.FC = () => {
         dispatch(resetError());
       }
     }, [success, error, dispatch]);
-  
+
+    useEffect(()=>{
+      console.log("Hello");
+    })
 
   return (
     <>

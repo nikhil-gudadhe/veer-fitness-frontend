@@ -25,11 +25,6 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
         setOpenDropdownId((prevId) => (prevId === memberId ? null : memberId));
     };
 
-    useEffect(()=>{
-        console.log("loading: ",fetchUsersLoading)
-        console.log("users: ", users)
-    },[])
-
     useEffect(() => {
         dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
     }, [dispatch, currentPage, rowsPerPage]);
