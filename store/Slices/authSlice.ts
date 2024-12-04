@@ -53,8 +53,20 @@ export const updateUser = createAsyncThunk("auth/updateUser", async (updatedUser
   }
 );
 
-export const deleteUser = createAsyncThunk("", async (updatedUser: UserFormInputs) => {
-});
+// Delete user
+export const deleteUser = createAsyncThunk(
+  "auth/deleteUser",
+  async (userId: string, { rejectWithValue }) => {
+      try {
+          const response = await axiosInstance.delete(`/users/delete/${userId}`);
+          return response.data;
+      } catch (error: any) {
+          return rejectWithValue(
+              error.response?.data?.message || "Failed to delete user"
+          );
+      }
+  }
+);
 
 // Login user
 export const loginUser = createAsyncThunk("auth/loginUser", async (data: any) => {
@@ -214,6 +226,23 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to search users';
     })
+
+    builder.addCase(deleteUser.pending, (state) => {
+    state.loading = true;
+    state.error = null;
+    });
+
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const deletedUserId = action.payload.data._id;
+        state.users = state.users.filter((user) => user._id !== deletedUserId);
+        state.success = "User deleted successfully";
+    });
+
+    builder.addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+    });
 
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.isAuthenticated = false;
