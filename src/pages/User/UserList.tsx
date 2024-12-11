@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserFormInputs } from '../../types/UserFormInputs.ts';
 import { AppDispatch, RootState } from '../../../store/store.ts';
-import { fetchUsers, searchUsers } from '../../../store/Slices/authSlice.ts';
+import { fetchUsers, searchUsers, deleteUser } from '../../../store/Slices/authSlice.ts';
 import Spinner from '../../components/Spinner.tsx';
 import DataTable from '../../components/DataTable';
 
@@ -13,7 +13,7 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { users, fetchUsersLoading, totalPages, currentPage } = useSelector((state: RootState) => state.auth);
+    const { users, fetchUsersLoading, totalUsers, totalPages, currentPage } = useSelector((state: RootState) => state.auth);
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
@@ -61,7 +61,18 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     }, [users]);
 
     const handleDeleteUser = (userId: string) => {
-        
+         dispatch(deleteUser(userId)).then((result) => {
+             if (result.meta.requestStatus === 'fulfilled') {
+               const remainingRecords = users.length - 1;
+               const totalRemainingPages = Math.ceil((totalUsers - 1) / rowsPerPage);
+              
+              if (remainingRecords < rowsPerPage && currentPage <= totalRemainingPages) {
+                 dispatch(fetchUsers({ page: currentPage, limit: rowsPerPage }));
+               }
+             } else {
+               console.log('Failed to delete enquiry:', result);
+            }
+           });
      }
     
     const handlePageChange = (pageNumber: number) => {
