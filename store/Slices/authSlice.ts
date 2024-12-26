@@ -32,6 +32,7 @@ const initialState: AuthState = {
   success: null
 }
 
+// Register user
 export const registerUser = createAsyncThunk("auth/registerMember", async (data: any, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post("/users/register", data);
@@ -41,6 +42,7 @@ export const registerUser = createAsyncThunk("auth/registerMember", async (data:
   }
 });
 
+// Update user
 export const updateUser = createAsyncThunk("auth/updateUser", async (updatedUser: UserFormInputs, { rejectWithValue }) => {
       try {
           const response = await axiosInstance.patch(`/users/edit/${updatedUser._id}`, updatedUser);
@@ -98,6 +100,7 @@ export const searchUsers = createAsyncThunk('users/searchUsers',
   }
 );
 
+// Fetch user
 export const fetchUsers = createAsyncThunk('users/fetchUsers', 
   async ({ page = 1, limit = 10 }: { page?: number; limit?: number; }, thunkAPI) => {
   try {
@@ -154,7 +157,7 @@ const authSlice = createSlice({
         if (index !== -1) {
             state.users[index] = updatedUser;
         }
-        state.success = "User updated successfully";
+        //state.success = "User updated successfully";
     });
     
     builder.addCase(updateUser.rejected, (state, action) => {

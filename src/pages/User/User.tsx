@@ -39,6 +39,7 @@ const User: React.FC = () => {
     };
 
     useEffect(() => {
+        console.log('useEffect triggered:', { success, error, dispatch  });
       if (success) {
         toast.success(success);
         dispatch(resetSuccess());
@@ -50,6 +51,7 @@ const User: React.FC = () => {
       }
 
     }, [success, error, dispatch]);  
+
 
  return (
     <>
